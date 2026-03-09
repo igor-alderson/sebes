@@ -164,8 +164,21 @@
       vertical-align: middle;
     }
     
+    tbody tr {
+      cursor: move;
+    }
+    
     tbody tr:hover {
       background: #f9fafb;
+    }
+    
+    tbody tr.dragging {
+      opacity: 0.5;
+      background: #dbeafe;
+    }
+    
+    tbody tr.drag-over {
+      border-top: 2px solid #3b82f6;
     }
     
     tfoot {
@@ -280,6 +293,18 @@
       justify-content: center;
     }
     
+    .drag-handle {
+      cursor: move;
+      color: #9ca3af;
+      padding: 0 8px;
+      user-select: none;
+      font-size: 18px;
+    }
+    
+    .drag-handle:hover {
+      color: #3b82f6;
+    }
+    
     .results-section {
       margin-top: 32px;
     }
@@ -347,34 +372,6 @@
     
     .muted {
       color: #6b7280;
-    }
-    
-    .summary-box {
-      background: #f9fafb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 16px;
-    }
-    
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    
-    .summary-row:last-child {
-      border-bottom: none;
-      font-weight: 700;
-      font-size: 16px;
-      color: #1a1a1a;
-    }
-    
-    .summary-row.tax {
-      background: #fef3c7;
-      margin: 8px 0;
-      padding: 12px;
-      border-radius: 6px;
     }
     
     .toast {
@@ -464,7 +461,7 @@
       <div class="card-header">
         <div>
           <div class="card-title">Справочник материалов и цен</div>
-          <div class="card-description">Заведите все материалы и укажите цены у 5 разных поставщиков</div>
+          <div class="card-description">Заведите все материалы и укажите цены у 5 разных поставщиков. Перетаскивайте строки для изменения порядка.</div>
         </div>
         <button class="btn btn-primary" onclick="addMaterialRow()">+ Добавить материал</button>
       </div>
@@ -473,6 +470,7 @@
         <table id="materialsTable">
           <thead>
             <tr>
+              <th width="5%"></th>
               <th>Наименование</th>
               <th>Ед. изм.</th>
               <th>Цена 1</th>
@@ -498,7 +496,7 @@
       <div class="card-header">
         <div>
           <div class="card-title">Материалы в изделии</div>
-          <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие</div>
+          <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие. Перетаскивайте строки для изменения порядка.</div>
         </div>
         <button class="btn btn-primary" onclick="addSpecMaterialRow()">+ Добавить материал</button>
       </div>
@@ -507,6 +505,7 @@
         <table id="specMaterialsTable">
           <thead>
             <tr>
+              <th width="5%"></th>
               <th width="25%">Материал</th>
               <th width="10%">Расход</th>
               <th width="10%">Ед.изм.</th>
@@ -529,7 +528,7 @@
       <div class="card-header">
         <div>
           <div class="card-title">Работы / Операции</div>
-          <div class="card-description">Укажите стоимость работ (общая для всех поставщиков)</div>
+          <div class="card-description">Укажите стоимость работ (общая для всех поставщиков). Перетаскивайте строки для изменения порядка.</div>
         </div>
         <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
       </div>
@@ -538,6 +537,7 @@
         <table id="opsTable">
           <thead>
             <tr>
+              <th width="5%"></th>
               <th width="60%">Наименование операции</th>
               <th width="20%">Стоимость</th>
               <th width="5%"></th>
@@ -547,11 +547,13 @@
           </tbody>
           <tfoot>
             <tr>
+              <td></td>
               <td class="text-right">⚙️ Итого работ (без налога)</td>
               <td class="text-right" id="ops-total">0.00 ₽</td>
               <td></td>
             </tr>
             <tr>
+              <td></td>
               <td class="text-right">🧾 Налог (43% от работ)</td>
               <td class="text-right" id="tax-amount">0.00 ₽</td>
               <td></td>
@@ -612,6 +614,7 @@
     setupTabs();
     loadFromLocalStorage();
     setupAutoRecalculate();
+    setupDragAndDrop();
     recalculate();
   });
   
@@ -636,15 +639,101 @@
     });
   }
   
+  // === Drag and Drop ===
+  function setupDragAndDrop() {
+    setupTableDrag('#materialsTable tbody');
+    setupTableDrag('#specMaterialsTable tbody');
+    setupTableDrag('#opsTable tbody');
+  }
+  
+  function setupTableDrag(tbodySelector) {
+    const tbody = document.querySelector(tbodySelector);
+    if (!tbody) return;
+    
+    let draggedRow = null;
+    
+    tbody.addEventListener('dragstart', (e) => {
+      const row = e.target.closest('tr');
+      if (!row) return;
+      
+      draggedRow = row;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', row.innerHTML);
+    });
+    
+    tbody.addEventListener('dragend', (e) => {
+      const row = e.target.closest('tr');
+      if (row) {
+        row.classList.remove('dragging');
+      }
+      
+      document.querySelectorAll('tbody tr').forEach(r => {
+        r.classList.remove('drag-over');
+      });
+      
+      draggedRow = null;
+      recalculate();
+      saveToLocalStorage();
+    });
+    
+    tbody.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      
+      const afterElement = getDragAfterElement(tbody, e.clientY);
+      const draggable = document.querySelector('.dragging');
+      
+      if (!draggable) return;
+      
+      if (afterElement == null) {
+        tbody.appendChild(draggable);
+      } else {
+        tbody.insertBefore(draggable, afterElement);
+      }
+    });
+    
+    tbody.addEventListener('dragenter', (e) => {
+      const row = e.target.closest('tr');
+      if (row && row !== draggedRow) {
+        row.classList.add('drag-over');
+      }
+    });
+    
+    tbody.addEventListener('dragleave', (e) => {
+      const row = e.target.closest('tr');
+      if (row) {
+        row.classList.remove('drag-over');
+      }
+    });
+  }
+  
+  function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('tr:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+  
   function addMaterialRow(data = null) {
     const tbody = document.querySelector('#materialsTable tbody');
     const row = document.createElement('tr');
+    row.setAttribute('draggable', 'true');
     
     const name = data?.name || '';
     const unit = data?.unit || 'шт';
     const prices = data?.prices || ['', '', '', '', ''];
     
     row.innerHTML = `
+      <td class="text-center"><span class="drag-handle">⋮</span></td>
       <td><input type="text" class="material-name" value="${name}" placeholder="Название материала"></td>
       <td><input type="text" class="material-unit" value="${unit}" style="width:70px"></td>
       ${[1,2,3,4,5].map(s => `
@@ -658,12 +747,14 @@
   function addSpecMaterialRow(data = null) {
     const tbody = document.querySelector('#specMaterialsTable tbody');
     const row = document.createElement('tr');
+    row.setAttribute('draggable', 'true');
     
     const materialIdx = data?.materialIdx ?? '';
     const qty = data?.qty || 1;
     const materialOptions = getMaterialOptions();
     
     row.innerHTML = `
+      <td class="text-center"><span class="drag-handle">⋮⋮</span></td>
       <td>
         <select class="material-select" onchange="updateSpecMaterialRow(this)">
           <option value="">-- Выберите материал --</option>
@@ -713,11 +804,13 @@
   function addOperationRow(data = null) {
     const tbody = document.querySelector('#opsTable tbody');
     const row = document.createElement('tr');
+    row.setAttribute('draggable', 'true');
     
     const name = data?.name || '';
     const cost = data?.cost || '';
     
     row.innerHTML = `
+      <td class="text-center"><span class="drag-handle">⋮⋮</span></td>
       <td><input type="text" class="op-name" value="${name}" placeholder="Название операции"></td>
       <td><input type="number" class="op-cost" value="${cost}" step="0.01" placeholder="0.00"></td>
       <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
@@ -730,6 +823,7 @@
     if (confirm('Удалить строку?')) {
       btn.closest('tr').remove();
       recalculate();
+      saveToLocalStorage();
     }
   }
   
@@ -789,7 +883,6 @@
     });
     
     displayResults(totals, materialsTotals, opsTotal, tax);
-    saveToLocalStorage();
   }
   
   function displayResults(totals, materialsTotals, opsTotal, tax) {
