@@ -209,6 +209,7 @@
     
     .input-small { width: 90px; }
     .input-tiny { width: 80px; }
+    .input-tax { width: 100px; }
     
     .btn {
       padding: 10px 20px;
@@ -307,6 +308,70 @@
       word-break: break-word;
     }
     
+    /* Список изделий */
+    .products-list {
+      display: grid;
+      gap: 16px;
+    }
+    
+    .product-item {
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    
+    .product-item:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    
+    .product-info h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    
+    .product-meta {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .product-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .tax-setting {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 12px;
+      background: white;
+      border-radius: 6px;
+    }
+    
+    .tax-setting label {
+      font-size: 14px;
+      color: #374151;
+      font-weight: 500;
+    }
+    
     .toast {
       position: fixed;
       bottom: 24px;
@@ -336,6 +401,8 @@
       .tab-btn { flex: 1; min-width: 200px; }
       .header { flex-direction: column; align-items: stretch; }
       .header-actions { justify-content: center; }
+      .product-item { grid-template-columns: 1fr; }
+      .product-meta { flex-wrap: wrap; }
     }
     
     #importFile { display: none; }
@@ -360,8 +427,11 @@
     <button class="tab-btn active" data-tab="materials">
       📦 1. Справочник материалов
     </button>
+    <button class="tab-btn" data-tab="products">
+      📋 2. Список изделий
+    </button>
     <button class="tab-btn" data-tab="specs">
-      📋 2. Спецификации изделий
+      🔧 3. Редактор спецификации
     </button>
   </div>
   
@@ -397,150 +467,147 @@
     </div>
   </div>
   
-  <!-- Вкладка 2: Спецификации изделий -->
+  <!-- Вкладка 2: Список всех изделий -->
+  <div id="products" class="tab-content">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Все изделия</div>
+          <div class="card-description">Список всех изделий с расчетами себестоимости. Нажмите на изделие для редактирования.</div>
+        </div>
+        <button class="btn btn-primary" onclick="createNewSpec()">+ Новое изделие</button>
+      </div>
+      
+      <div class="products-list" id="productsList">
+        <!-- Здесь будет список изделий -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Вкладка 3: Редактор спецификации -->
   <div id="specs" class="tab-content">
     
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">Выберите изделие</div>
-          <div class="card-description">Создавайте и управляйте спецификациями разных изделий</div>
-        </div>
-        <div class="spec-selector">
-          <select id="specSelect" onchange="switchSpec(this.value)">
-            <option value="">-- Создать новое изделие --</option>
-          </select>
-          <div class="spec-actions">
-            <button class="btn btn-primary btn-sm" onclick="createNewSpec()">+ Новое</button>
-            <button class="btn btn-secondary btn-sm" onclick="duplicateSpec()">📋 Копия</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteSpec()">🗑️ Удалить</button>
+          <div class="card-title">
+            <input type="text" id="currentSpecName" value="Новое изделие" 
+              style="font-size: 18px; font-weight: 600; border: none; background: transparent; width: 400px;"
+              onchange="updateSpecName(this.value)">
           </div>
+          <div class="card-description">Редактируйте название изделия и ставку налога</div>
         </div>
+        <div class="spec-actions">
+          <button class="btn btn-secondary btn-sm" onclick="backToProducts()">← Назад к списку</button>
+        </div>
+      </div>
+      
+      <div class="tax-setting">
+        <label for="taxRate">Ставка налога (%):</label>
+        <input type="number" id="taxRate" value="43" min="0" max="100" step="0.1" class="input-tax" onchange="updateTaxRate(this.value)">
+        <span class="muted">% от стоимости работ</span>
       </div>
     </div>
     
-    <div id="specContent" style="display: none;">
-      
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">
-              <input type="text" id="currentSpecName" value="Новое изделие" 
-                style="font-size: 18px; font-weight: 600; border: none; background: transparent; width: 400px;"
-                onchange="updateSpecName(this.value)">
-            </div>
-            <div class="card-description">Редактируйте название изделия</div>
-          </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Материалы в изделии</div>
+          <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие</div>
         </div>
+        <button class="btn btn-primary" onclick="addSpecMaterialRow()">+ Добавить материал</button>
       </div>
       
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Материалы в изделии</div>
-            <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие</div>
-          </div>
-          <button class="btn btn-primary" onclick="addSpecMaterialRow()">+ Добавить материал</button>
+      <div class="table-wrapper">
+        <table id="specMaterialsTable">
+          <thead>
+            <tr>
+              <th width="5%"></th>
+              <th width="25%">Материал</th>
+              <th width="10%">Расход</th>
+              <th width="10%">Ед.изм.</th>
+              <th width="9%">Стоимость 1</th>
+              <th width="9%">Стоимость 2</th>
+              <th width="9%">Стоимость 3</th>
+              <th width="9%">Стоимость 4</th>
+              <th width="9%">Стоимость 5</th>
+              <th width="5%"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Работы / Операции</div>
+          <div class="card-description">Укажите стоимость работ (общая для всех поставщиков)</div>
         </div>
-        
-        <div class="table-wrapper">
-          <table id="specMaterialsTable">
-            <thead>
-              <tr>
-                <th width="5%"></th>
-                <th width="25%">Материал</th>
-                <th width="10%">Расход</th>
-                <th width="10%">Ед.изм.</th>
-                <th width="9%">Стоимость 1</th>
-                <th width="9%">Стоимость 2</th>
-                <th width="9%">Стоимость 3</th>
-                <th width="9%">Стоимость 4</th>
-                <th width="9%">Стоимость 5</th>
-                <th width="5%"></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
       </div>
       
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Работы / Операции</div>
-            <div class="card-description">Укажите стоимость работ (общая для всех поставщиков)</div>
-          </div>
-          <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
+      <div class="table-wrapper">
+        <table id="opsTable">
+          <thead>
+            <tr>
+              <th width="5%"></th>
+              <th width="60%">Наименование операции</th>
+              <th width="20%">Стоимость</th>
+              <th width="5%"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td class="text-right">⚙️ Итого работ (без налога)</td>
+              <td class="text-right" id="ops-total">0.00 ₽</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="text-right">🧾 Налог (<span id="tax-rate-display">43</span>%)</td>
+              <td class="text-right" id="tax-amount">0.00 ₽</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    
+    <div class="card results-section">
+      <div class="card-title">💰 Себестоимость по поставщикам</div>
+      <div class="card-description" style="margin-bottom: 20px;">Расчёт: Материалы (по поставщикам) + Работы + Налог</div>
+      
+      <div class="results-grid">
+        <div class="result-card" id="card-1">
+          <div class="label">Стоимость 1</div>
+          <div class="value" id="res-1">0 <small>₽</small></div>
+          <div class="details" id="breakdown-1"></div>
         </div>
-        
-        <div class="table-wrapper">
-          <table id="opsTable">
-            <thead>
-              <tr>
-                <th width="5%"></th>
-                <th width="60%">Наименование операции</th>
-                <th width="20%">Стоимость</th>
-                <th width="5%"></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td class="text-right">⚙️ Итого работ (без налога)</td>
-                <td class="text-right" id="ops-total">0.00 ₽</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td class="text-right">🧾 Налог (43% от работ)</td>
-                <td class="text-right" id="tax-amount">0.00 ₽</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
+        <div class="result-card" id="card-2">
+          <div class="label">Стоимость 2</div>
+          <div class="value" id="res-2">0 <small>₽</small></div>
+          <div class="details" id="breakdown-2"></div>
+        </div>
+        <div class="result-card" id="card-3">
+          <div class="label">Стоимость 3</div>
+          <div class="value" id="res-3">0 <small>₽</small></div>
+          <div class="details" id="breakdown-3"></div>
+        </div>
+        <div class="result-card" id="card-4">
+          <div class="label">Стоимость 4</div>
+          <div class="value" id="res-4">0 <small>₽</small></div>
+          <div class="details" id="breakdown-4"></div>
+        </div>
+        <div class="result-card" id="card-5">
+          <div class="label">Стоимость 5</div>
+          <div class="value" id="res-5">0 <small>₽</small></div>
+          <div class="details" id="breakdown-5"></div>
         </div>
       </div>
-      
-      <div class="card results-section">
-        <div class="card-title">💰 Себестоимость по поставщикам</div>
-        <div class="card-description" style="margin-bottom: 20px;">Расчёт: Материалы (по поставщикам) + Работы + Налог (43%)</div>
-        
-        <div class="results-grid">
-          <div class="result-card" id="card-1">
-            <div class="label">Стоимость 1</div>
-            <div class="value" id="res-1">0 <small>₽</small></div>
-            <div class="details" id="breakdown-1"></div>
-          </div>
-          <div class="result-card" id="card-2">
-            <div class="label">Стоимость 2</div>
-            <div class="value" id="res-2">0 <small>₽</small></div>
-            <div class="details" id="breakdown-2"></div>
-          </div>
-          <div class="result-card" id="card-3">
-            <div class="label">Стоимость 3</div>
-            <div class="value" id="res-3">0 <small>₽</small></div>
-            <div class="details" id="breakdown-3"></div>
-          </div>
-          <div class="result-card" id="card-4">
-            <div class="label">Стоимость 4</div>
-            <div class="value" id="res-4">0 <small>₽</small></div>
-            <div class="details" id="breakdown-4"></div>
-          </div>
-          <div class="result-card" id="card-5">
-            <div class="label">Стоимость 5</div>
-            <div class="value" id="res-5">0 <small>₽</small></div>
-            <div class="details" id="breakdown-5"></div>
-          </div>
-        </div>
-        
-        <div class="actions-bar">
-          <button class="btn btn-success" onclick="saveAll()">Сохранить изменения</button>
-          <button class="btn btn-secondary" onclick="duplicateSpec()">Создать копию</button>
-          <button class="btn btn-danger" onclick="deleteSpec()">Удалить изделие</button>
-        </div>
-      </div>
-      
     </div>
     
   </div>
@@ -559,8 +626,7 @@
     loadAllData();
     setupAutoRecalculate();
     setupDragAndDrop();
-    renderSpecSelector();
-    recalculate();
+    renderProductsList();
   });
   
   function setupTabs() {
@@ -570,6 +636,10 @@
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab).classList.add('active');
+        
+        if (btn.dataset.tab === 'products') {
+          renderProductsList();
+        }
       });
     });
   }
@@ -578,7 +648,8 @@
     document.addEventListener('input', (e) => {
       if (e.target.classList.contains('price-input') || 
           e.target.classList.contains('qty-input') || 
-          e.target.classList.contains('op-cost')) {
+          e.target.classList.contains('op-cost') ||
+          e.target.id === 'taxRate') {
         recalculate();
       }
     });
@@ -679,15 +750,26 @@
     const newSpec = {
       id: Date.now().toString(),
       name: name,
+      taxRate: 43,
       materials: [],
       operations: []
     };
     
     specifications.push(newSpec);
-    renderSpecSelector();
-    switchSpec(newSpec.id);
     saveAll();
+    renderProductsList();
+    editSpec(newSpec.id);
     showToast('Создано новое изделие', 'success');
+  }
+  
+  function editSpec(specId) {
+    // Переключаемся на вкладку редактора
+    document.querySelector('[data-tab="specs"]').click();
+    switchSpec(specId);
+  }
+  
+  function backToProducts() {
+    document.querySelector('[data-tab="products"]').click();
   }
   
   function switchSpec(specId) {
@@ -696,7 +778,6 @@
     currentSpecId = specId;
     
     if (!specId) {
-      document.getElementById('specContent').style.display = 'none';
       return;
     }
     
@@ -704,7 +785,8 @@
     if (!spec) return;
     
     document.getElementById('currentSpecName').value = spec.name;
-    document.getElementById('specContent').style.display = 'block';
+    document.getElementById('taxRate').value = spec.taxRate || 43;
+    document.getElementById('tax-rate-display').textContent = spec.taxRate || 43;
     
     renderSpecMaterials(spec);
     renderSpecOperations(spec);
@@ -716,22 +798,79 @@
     const spec = specifications.find(s => s.id === currentSpecId);
     if (spec) {
       spec.name = newName;
-      renderSpecSelector();
+      renderProductsList();
       saveAll();
     }
   }
   
-  function renderSpecSelector() {
-    const select = document.getElementById('specSelect');
-    select.innerHTML = '<option value="">-- Создать новое изделие --</option>';
+  function updateTaxRate(rate) {
+    if (!currentSpecId) return;
+    const spec = specifications.find(s => s.id === currentSpecId);
+    if (spec) {
+      spec.taxRate = parseFloat(rate) || 0;
+      document.getElementById('tax-rate-display').textContent = spec.taxRate;
+      recalculate();
+      saveAll();
+    }
+  }
+  
+  function renderProductsList() {
+    const container = document.getElementById('productsList');
+    container.innerHTML = '';
+    
+    if (specifications.length === 0) {
+      container.innerHTML = '<p class="muted" style="text-align: center; padding: 40px;">Нет созданных изделий. Нажмите "+ Новое изделие" для создания.</p>';
+      return;
+    }
     
     specifications.forEach(spec => {
-      const option = document.createElement('option');
-      option.value = spec.id;
-      option.textContent = spec.name;
-      option.selected = spec.id === currentSpecId;
-      select.appendChild(option);
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      
+      const materialsCount = spec.materials?.length || 0;
+      const operationsCount = spec.operations?.length || 0;
+      
+      item.innerHTML = `
+        <div class="product-info">
+          <h3>${spec.name}</h3>
+          <div class="product-meta">
+            <span>📦 Материалов: ${materialsCount}</span>
+            <span>⚙️ Работ: ${operationsCount}</span>
+            <span>🧾 Налог: ${spec.taxRate || 43}%</span>
+          </div>
+          <div class="tax-setting">
+            <label>Ставка налога:</label>
+            <input type="number" value="${spec.taxRate || 43}" min="0" max="100" step="0.1" 
+              class="input-tax" 
+              onchange="updateSpecTaxRate('${spec.id}', this.value)"
+              onclick="event.stopPropagation()">
+            <span class="muted">%</span>
+          </div>
+        </div>
+        <div class="product-actions">
+          <button class="btn btn-primary btn-sm" onclick="editSpec('${spec.id}')">✏️ Редактировать</button>
+          <button class="btn btn-secondary btn-sm" onclick="duplicateSpec('${spec.id}')">📋 Копия</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSpec('${spec.id}')">🗑️ Удалить</button>
+        </div>
+      `;
+      
+      item.onclick = (e) => {
+        if (!e.target.closest('button') && !e.target.closest('input')) {
+          editSpec(spec.id);
+        }
+      };
+      
+      container.appendChild(item);
     });
+  }
+  
+  function updateSpecTaxRate(specId, rate) {
+    const spec = specifications.find(s => s.id === specId);
+    if (spec) {
+      spec.taxRate = parseFloat(rate) || 0;
+      saveAll();
+      showToast('Ставка налога обновлена', 'success');
+    }
   }
   
   function renderSpecMaterials(spec) {
@@ -854,6 +993,10 @@
   function recalculate() {
     if (!currentSpecId) return;
     
+    const spec = specifications.find(s => s.id === currentSpecId);
+    if (!spec) return;
+    
+    const taxRate = spec.taxRate || 43;
     const materialsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
     let opsTotal = 0;
     
@@ -886,7 +1029,7 @@
       opsTotal += cost;
     });
     
-    const tax = opsTotal * 0.43;
+    const tax = opsTotal * (taxRate / 100);
     
     document.getElementById('ops-total').textContent = opsTotal.toFixed(2) + ' ₽';
     document.getElementById('tax-amount').textContent = tax.toFixed(2) + ' ₽';
@@ -896,10 +1039,10 @@
       totals[s] = materialsTotals[s] + opsTotal + tax;
     });
     
-    displayResults(totals, materialsTotals, opsTotal, tax);
+    displayResults(totals, materialsTotals, opsTotal, tax, taxRate);
   }
   
-  function displayResults(totals, materialsTotals, opsTotal, tax) {
+  function displayResults(totals, materialsTotals, opsTotal, tax, taxRate) {
     let bestSupplier = null;
     let bestCost = Infinity;
     
@@ -910,7 +1053,7 @@
       
       if (totals[s] > 0) {
         el.innerHTML = `${Math.round(totals[s]).toLocaleString('ru-RU')} <small>₽</small>`;
-        breakdown.innerHTML = `Материалы: ${materialsTotals[s].toFixed(2)} ₽<br>Работы: ${opsTotal.toFixed(2)} ₽<br>Налог: ${tax.toFixed(2)} ₽`;
+        breakdown.innerHTML = `Материалы: ${materialsTotals[s].toFixed(2)} ₽<br>Работы: ${opsTotal.toFixed(2)} ₽<br>Налог (${taxRate}%): ${tax.toFixed(2)} ₽`;
         
         if (totals[s] < bestCost) {
           bestCost = totals[s];
@@ -976,7 +1119,6 @@
     };
     
     localStorage.setItem('costCalculatorData', JSON.stringify(data));
-    showToast('Данные сохранены!', 'success');
   }
   
   function loadAllData() {
@@ -989,13 +1131,13 @@
       specifications.push({
         id: '1',
         name: 'Стул Токио',
+        taxRate: 43,
         materials: [{materialIdx: '0', qty: '0.6666'}, {materialIdx: '1', qty: '1.375'}, {materialIdx: '2', qty: '1'}],
         operations: [{name: 'Склейка спинки', cost: '48'}, {name: 'Обивщик', cost: '169.5'}, {name: 'Упаковка', cost: '43.5'}]
       });
       
       currentSpecId = '1';
-      renderSpecSelector();
-      switchSpec('1');
+      renderProductsList();
       return;
     }
     
@@ -1004,21 +1146,15 @@
     specifications = data.specifications || [];
     
     materialsCatalog.forEach(mat => addMaterialRow(mat));
-    renderSpecSelector();
+    renderProductsList();
     
     if (specifications.length > 0) {
       currentSpecId = specifications[0].id;
-      switchSpec(currentSpecId);
     }
   }
   
-  function duplicateSpec() {
-    if (!currentSpecId) {
-      showToast('Выберите изделие для копирования', 'error');
-      return;
-    }
-    
-    const source = specifications.find(s => s.id === currentSpecId);
+  function duplicateSpec(specId) {
+    const source = specifications.find(s => s.id === specId);
     if (!source) return;
     
     const newName = prompt('Название копии:', source.name + ' (копия)');
@@ -1027,32 +1163,28 @@
     const newSpec = {
       id: Date.now().toString(),
       name: newName,
+      taxRate: source.taxRate || 43,
       materials: JSON.parse(JSON.stringify(source.materials)),
       operations: JSON.parse(JSON.stringify(source.operations))
     };
     
     specifications.push(newSpec);
-    renderSpecSelector();
-    switchSpec(newSpec.id);
     saveAll();
+    renderProductsList();
     showToast('Спецификация скопирована', 'success');
   }
   
-  function deleteSpec() {
-    if (!currentSpecId) {
-      showToast('Выберите изделие для удаления', 'error');
-      return;
-    }
-    
-    const spec = specifications.find(s => s.id === currentSpecId);
+  function deleteSpec(specId) {
+    const spec = specifications.find(s => s.id === specId);
     if (!spec) return;
     
     if (confirm(`Удалить спецификацию "${spec.name}"?`)) {
-      specifications = specifications.filter(s => s.id !== currentSpecId);
-      currentSpecId = null;
-      document.getElementById('specContent').style.display = 'none';
-      renderSpecSelector();
+      specifications = specifications.filter(s => s.id !== specId);
+      if (currentSpecId === specId) {
+        currentSpecId = null;
+      }
       saveAll();
+      renderProductsList();
       showToast('Спецификация удалена', 'success');
     }
   }
