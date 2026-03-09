@@ -504,7 +504,7 @@
       
       <div class="tax-setting">
         <label for="taxRate">Ставка налога (%):</label>
-        <input type="number" id="taxRate" value="43" min="0" max="100" step="0.1" class="input-tax" onchange="updateTaxRate(this.value)">
+        <input type="number" id="taxRate" value="43" min="0" max="100" step="0.1" class="input-tax" onblur="updateTaxRate(this.value)">
         <span class="muted">% от стоимости работ</span>
       </div>
     </div>
@@ -763,7 +763,6 @@
   }
   
   function editSpec(specId) {
-    // Переключаемся на вкладку редактора
     document.querySelector('[data-tab="specs"]').click();
     switchSpec(specId);
   }
@@ -807,8 +806,11 @@
     if (!currentSpecId) return;
     const spec = specifications.find(s => s.id === currentSpecId);
     if (spec) {
-      spec.taxRate = parseFloat(rate) || 0;
-      document.getElementById('tax-rate-display').textContent = spec.taxRate;
+      const parsedRate = parseFloat(rate);
+      if (!isNaN(parsedRate) && parsedRate >= 0 && parsedRate <= 100) {
+        spec.taxRate = parsedRate;
+        document.getElementById('tax-rate-display').textContent = parsedRate;
+      }
       recalculate();
       saveAll();
     }
@@ -842,7 +844,7 @@
             <label>Ставка налога:</label>
             <input type="number" value="${spec.taxRate || 43}" min="0" max="100" step="0.1" 
               class="input-tax" 
-              onchange="updateSpecTaxRate('${spec.id}', this.value)"
+              onblur="updateSpecTaxRate('${spec.id}', this.value)"
               onclick="event.stopPropagation()">
             <span class="muted">%</span>
           </div>
@@ -867,7 +869,10 @@
   function updateSpecTaxRate(specId, rate) {
     const spec = specifications.find(s => s.id === specId);
     if (spec) {
-      spec.taxRate = parseFloat(rate) || 0;
+      const parsedRate = parseFloat(rate);
+      if (!isNaN(parsedRate) && parsedRate >= 0 && parsedRate <= 100) {
+        spec.taxRate = parsedRate;
+      }
       saveAll();
       showToast('Ставка налога обновлена', 'success');
     }
