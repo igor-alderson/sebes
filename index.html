@@ -14,14 +14,12 @@
       line-height: 1.5;
     }
     
-    /* Контейнер */
     .container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 32px 24px;
     }
     
-    /* Шапка */
     .header {
       background: white;
       border-radius: 12px;
@@ -65,7 +63,6 @@
       gap: 8px;
     }
     
-    /* Вкладки */
     .tabs {
       display: flex;
       gap: 8px;
@@ -101,7 +98,6 @@
       color: white;
     }
     
-    /* Контент вкладок */
     .tab-content {
       display: none;
     }
@@ -110,7 +106,6 @@
       display: block;
     }
     
-    /* Карточки */
     .card {
       background: white;
       border-radius: 12px;
@@ -138,7 +133,6 @@
       font-size: 14px;
     }
     
-    /* Таблицы */
     .table-wrapper {
       overflow-x: auto;
       border-radius: 8px;
@@ -149,7 +143,6 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
-      min-width: 1200px;
     }
     
     thead {
@@ -184,7 +177,6 @@
       background: #fef3c7;
     }
     
-    /* Поля ввода */
     input[type="text"],
     input[type="number"],
     select {
@@ -223,7 +215,10 @@
       width: 80px;
     }
     
-    /* Кнопки */
+    .input-medium {
+      width: 120px;
+    }
+    
     .btn {
       padding: 10px 20px;
       border: none;
@@ -285,7 +280,6 @@
       justify-content: center;
     }
     
-    /* Результаты */
     .results-section {
       margin-top: 32px;
     }
@@ -335,7 +329,6 @@
       line-height: 1.6;
     }
     
-    /* Кнопки действий */
     .actions-bar {
       display: flex;
       gap: 12px;
@@ -344,7 +337,6 @@
       border-top: 2px solid #e5e7eb;
     }
     
-    /* Утилиты */
     .text-right {
       text-align: right;
     }
@@ -357,7 +349,34 @@
       color: #6b7280;
     }
     
-    /* Toast */
+    .summary-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .summary-row:last-child {
+      border-bottom: none;
+      font-weight: 700;
+      font-size: 16px;
+      color: #1a1a1a;
+    }
+    
+    .summary-row.tax {
+      background: #fef3c7;
+      margin: 8px 0;
+      padding: 12px;
+      border-radius: 6px;
+    }
+    
     .toast {
       position: fixed;
       bottom: 24px;
@@ -386,7 +405,6 @@
       background: #ef4444;
     }
     
-    /* Адаптив */
     @media (max-width: 1200px) {
       .results-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -417,7 +435,6 @@
 
 <div class="container">
   
-  <!-- Шапка -->
   <div class="header">
     <h1>
       📦 Калькулятор себестоимости
@@ -432,7 +449,6 @@
     </div>
   </div>
   
-  <!-- Вкладки -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="materials">
       📦 1. Справочник материалов
@@ -468,7 +484,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Строки добавляются через JS -->
           </tbody>
         </table>
       </div>
@@ -492,24 +507,18 @@
         <table id="specMaterialsTable">
           <thead>
             <tr>
-              <th>Материал</th>
-              <th>Расход</th>
-              <th>Ед.изм.</th>
-              <th>Цена 1</th>
-              <th>Ст-сть 1</th>
-              <th>Цена 2</th>
-              <th>Ст-сть 2</th>
-              <th>Цена 3</th>
-              <th>Ст-сть 3</th>
-              <th>Цена 4</th>
-              <th>Ст-сть 4</th>
-              <th>Цена 5</th>
-              <th>Ст-сть 5</th>
-              <th></th>
+              <th width="25%">Материал</th>
+              <th width="10%">Расход</th>
+              <th width="10%">Ед.изм.</th>
+              <th width="9%">Стоимость 1</th>
+              <th width="9%">Стоимость 2</th>
+              <th width="9%">Стоимость 3</th>
+              <th width="9%">Стоимость 4</th>
+              <th width="9%">Стоимость 5</th>
+              <th width="5%"></th>
             </tr>
           </thead>
           <tbody>
-            <!-- Строки добавляются через JS -->
           </tbody>
         </table>
       </div>
@@ -520,7 +529,7 @@
       <div class="card-header">
         <div>
           <div class="card-title">Работы / Операции</div>
-          <div class="card-description">Укажите стоимость работ для каждого поставщика</div>
+          <div class="card-description">Укажите стоимость работ (общая для всех поставщиков)</div>
         </div>
         <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
       </div>
@@ -529,52 +538,22 @@
         <table id="opsTable">
           <thead>
             <tr>
-              <th>Наименование операции</th>
-              <th>Кол-во</th>
-              <th>Ед.изм.</th>
-              <th>Цена 1</th>
-              <th>Ст-сть 1</th>
-              <th>Цена 2</th>
-              <th>Ст-сть 2</th>
-              <th>Цена 3</th>
-              <th>Ст-сть 3</th>
-              <th>Цена 4</th>
-              <th>Ст-сть 4</th>
-              <th>Цена 5</th>
-              <th>Ст-сть 5</th>
-              <th></th>
+              <th width="60%">Наименование операции</th>
+              <th width="20%">Стоимость</th>
+              <th width="5%"></th>
             </tr>
           </thead>
           <tbody>
-            <!-- Строки добавляются через JS -->
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3">⚙️ Итого работ (без налога)</td>
-              <td class="text-right" id="ops-total-1">0.00</td>
-              <td></td>
-              <td class="text-right" id="ops-total-2">0.00</td>
-              <td></td>
-              <td class="text-right" id="ops-total-3">0.00</td>
-              <td></td>
-              <td class="text-right" id="ops-total-4">0.00</td>
-              <td></td>
-              <td class="text-right" id="ops-total-5">0.00</td>
-              <td></td>
+              <td class="text-right">⚙️ Итого работ (без налога)</td>
+              <td class="text-right" id="ops-total">0.00 ₽</td>
               <td></td>
             </tr>
             <tr>
-              <td colspan="3">🧾 Налог (43% от работ)</td>
-              <td class="text-right" id="tax-1">0.00</td>
-              <td></td>
-              <td class="text-right" id="tax-2">0.00</td>
-              <td></td>
-              <td class="text-right" id="tax-3">0.00</td>
-              <td></td>
-              <td class="text-right" id="tax-4">0.00</td>
-              <td></td>
-              <td class="text-right" id="tax-5">0.00</td>
-              <td></td>
+              <td class="text-right">🧾 Налог (43% от работ)</td>
+              <td class="text-right" id="tax-amount">0.00 ₽</td>
               <td></td>
             </tr>
           </tfoot>
@@ -585,7 +564,7 @@
     <!-- Результаты -->
     <div class="card results-section">
       <div class="card-title">💰 Себестоимость по поставщикам</div>
-      <div class="card-description" style="margin-bottom: 20px;">Расчёт: (Материалы × Расход) + Работы + Налог (43%)</div>
+      <div class="card-description" style="margin-bottom: 20px;">Расчёт: Материалы (по поставщикам) + Работы + Налог (43%)</div>
       
       <div class="results-grid">
         <div class="result-card" id="card-1">
@@ -615,7 +594,6 @@
         </div>
       </div>
       
-      <!-- Кнопки действий -->
       <div class="actions-bar">
         <button class="btn btn-success" onclick="saveData()">Сохранить изменения</button>
         <button class="btn btn-secondary">Создать копию</button>
@@ -627,16 +605,9 @@
   
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">Данные сохранены!</div>
 
 <script>
-  // === Глобальные данные ===
-  let materialsData = [];
-  let specMaterialsData = [];
-  let operationsData = [];
-  
-  // === Инициализация ===
   document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     loadFromLocalStorage();
@@ -644,7 +615,6 @@
     recalculate();
   });
   
-  // === Переключение вкладок ===
   function setupTabs() {
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -656,20 +626,16 @@
     });
   }
   
-  // === Автопересчёт ===
   function setupAutoRecalculate() {
     document.addEventListener('input', (e) => {
       if (e.target.classList.contains('price-input') || 
           e.target.classList.contains('qty-input') || 
-          e.target.classList.contains('op-qty') ||
-          e.target.classList.contains('material-name') ||
-          e.target.classList.contains('material-unit')) {
+          e.target.classList.contains('op-cost')) {
         recalculate();
       }
     });
   }
   
-  // === Вкладка 1: Добавить материал ===
   function addMaterialRow(data = null) {
     const tbody = document.querySelector('#materialsTable tbody');
     const row = document.createElement('tr');
@@ -689,7 +655,6 @@
     tbody.appendChild(row);
   }
   
-  // === Вкладка 2: Добавить материал в спецификацию ===
   function addSpecMaterialRow(data = null) {
     const tbody = document.querySelector('#specMaterialsTable tbody');
     const row = document.createElement('tr');
@@ -708,8 +673,7 @@
       <td><input type="number" class="qty-input" value="${qty}" step="0.0001" min="0" style="width:90px"></td>
       <td><input type="text" class="spec-unit" value="" readonly style="width:70px;background:#f9fafb"></td>
       ${[1,2,3,4,5].map(s => `
-        <td><input type="number" class="price-input" data-supplier="${s}" data-type="spec-material" value="" step="0.01" placeholder="-" style="width:80px"></td>
-        <td><input type="text" class="cost-display" data-supplier="${s}" data-type="spec-material-cost" value="" readonly style="width:80px;background:#f9fafb"></td>
+        <td><input type="text" class="cost-display" data-supplier="${s}" value="" readonly style="background:#f9fafb"></td>
       `).join('')}
       <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
     `;
@@ -719,21 +683,11 @@
       const select = row.querySelector('.material-select');
       select.value = materialIdx;
       updateSpecMaterialRow(select);
-      
-      if (data?.overridePrices) {
-        [1,2,3,4,5].forEach(s => {
-          const priceInput = row.querySelector(`.price-input[data-supplier="${s}"]`);
-          if (data.overridePrices[s-1] !== undefined && data.overridePrices[s-1] !== '') {
-            priceInput.value = data.overridePrices[s-1];
-          }
-        });
-      }
     }
     
     recalculate();
   }
   
-  // Обновление строки спецификации
   function updateSpecMaterialRow(select) {
     const row = select.closest('tr');
     const materialIdx = select.value;
@@ -741,7 +695,6 @@
     if (materialIdx === '') {
       row.querySelector('.spec-unit').value = '';
       [1,2,3,4,5].forEach(s => {
-        row.querySelector(`.price-input[data-supplier="${s}"]`).value = '';
         row.querySelector(`.cost-display[data-supplier="${s}"]`).value = '';
       });
       recalculate();
@@ -754,43 +707,25 @@
     const unit = materialRow.querySelector('.material-unit').value;
     row.querySelector('.spec-unit').value = unit;
     
-    [1,2,3,4,5].forEach(s => {
-      const priceInput = materialRow.querySelector(`.price-input[data-supplier="${s}"]`);
-      const specPriceInput = row.querySelector(`.price-input[data-supplier="${s}"][data-type="spec-material"]`);
-      
-      if (priceInput.value && !specPriceInput.dataset.overridden) {
-        specPriceInput.value = priceInput.value;
-      }
-    });
-    
     recalculate();
   }
   
-  // === Вкладка 2: Добавить операцию ===
   function addOperationRow(data = null) {
     const tbody = document.querySelector('#opsTable tbody');
     const row = document.createElement('tr');
     
     const name = data?.name || '';
-    const qty = data?.qty || 1;
-    const unit = data?.unit || 'шт';
-    const prices = data?.prices || ['', '', '', '', ''];
+    const cost = data?.cost || '';
     
     row.innerHTML = `
       <td><input type="text" class="op-name" value="${name}" placeholder="Название операции"></td>
-      <td><input type="number" class="op-qty" value="${qty}" step="0.01" min="0" style="width:70px"></td>
-      <td><input type="text" class="op-unit" value="${unit}" style="width:70px"></td>
-      ${[1,2,3,4,5].map(s => `
-        <td><input type="number" class="price-input" data-supplier="${s}" data-type="op" value="${prices[s-1] || ''}" step="0.01" placeholder="-" style="width:80px"></td>
-        <td><input type="text" class="cost-display" data-supplier="${s}" data-type="op-cost" value="" readonly style="width:80px;background:#f9fafb"></td>
-      `).join('')}
+      <td><input type="number" class="op-cost" value="${cost}" step="0.01" placeholder="0.00"></td>
       <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
     `;
     tbody.appendChild(row);
     recalculate();
   }
   
-  // === Удаление строки ===
   function deleteRow(btn) {
     if (confirm('Удалить строку?')) {
       btn.closest('tr').remove();
@@ -798,7 +733,6 @@
     }
   }
   
-  // === Получить опции материалов ===
   function getMaterialOptions() {
     return Array.from(document.querySelectorAll('#materialsTable tbody tr'))
       .map((row, idx) => {
@@ -808,70 +742,57 @@
       .join('');
   }
   
-  // === Пересчёт себестоимости ===
   function recalculate() {
     const materialsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-    const opsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+    let opsTotal = 0;
     
-    // 1. Материалы
+    // Материалы
     document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
       const materialIdx = row.querySelector('.material-select').value;
       const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
       
       if (materialIdx === '' || qty === 0) return;
       
+      const materialRow = document.querySelectorAll('#materialsTable tbody tr')[materialIdx];
+      if (!materialRow) return;
+      
+      const unit = materialRow.querySelector('.material-unit').value;
+      row.querySelector('.spec-unit').value = unit;
+      
       [1,2,3,4,5].forEach(s => {
-        const priceInput = row.querySelector(`.price-input[data-supplier="${s}"][data-type="spec-material"]`);
-        const costDisplay = row.querySelector(`.cost-display[data-supplier="${s}"][data-type="spec-material-cost"]`);
+        const priceInput = materialRow.querySelector(`.price-input[data-supplier="${s}"]`);
+        const costDisplay = row.querySelector(`.cost-display[data-supplier="${s}"]`);
         
         const price = parseFloat(priceInput.value) || 0;
         const cost = price * qty;
         
-        costDisplay.value = cost > 0 ? cost.toFixed(2) : '';
+        costDisplay.value = cost > 0 ? cost.toFixed(2) : '—';
         materialsTotals[s] += cost;
       });
     });
     
-    // 2. Работы
+    // Работы
     document.querySelectorAll('#opsTable tbody tr').forEach(row => {
-      const qty = parseFloat(row.querySelector('.op-qty').value) || 0;
-      
-      if (qty === 0) return;
-      
-      [1,2,3,4,5].forEach(s => {
-        const priceInput = row.querySelector(`.price-input[data-supplier="${s}"][data-type="op"]`);
-        const costDisplay = row.querySelector(`.cost-display[data-supplier="${s}"][data-type="op-cost"]`);
-        
-        const price = parseFloat(priceInput.value) || 0;
-        const cost = price * qty;
-        
-        costDisplay.value = cost > 0 ? cost.toFixed(2) : '';
-        opsTotals[s] += cost;
-      });
+      const cost = parseFloat(row.querySelector('.op-cost').value) || 0;
+      opsTotal += cost;
     });
     
-    // 3. Итоги работ и налог
-    [1,2,3,4,5].forEach(s => {
-      document.getElementById(`ops-total-${s}`).textContent = opsTotals[s].toFixed(2);
-      const tax = opsTotals[s] * 0.43;
-      document.getElementById(`tax-${s}`).textContent = tax.toFixed(2);
-    });
+    const tax = opsTotal * 0.43;
     
-    // 4. Итоговая себестоимость
+    document.getElementById('ops-total').textContent = opsTotal.toFixed(2) + ' ₽';
+    document.getElementById('tax-amount').textContent = tax.toFixed(2) + ' ₽';
+    
+    // Итоги по поставщикам
     const totals = {};
     [1,2,3,4,5].forEach(s => {
-      totals[s] = materialsTotals[s] + opsTotals[s] + (opsTotals[s] * 0.43);
+      totals[s] = materialsTotals[s] + opsTotal + tax;
     });
     
-    // 5. Отображение
-    displayResults(totals, materialsTotals, opsTotals);
-    
-    // 6. Сохранение
+    displayResults(totals, materialsTotals, opsTotal, tax);
     saveToLocalStorage();
   }
   
-  // === Отображение результатов ===
-  function displayResults(totals, materialsTotals, opsTotals) {
+  function displayResults(totals, materialsTotals, opsTotal, tax) {
     let bestSupplier = null;
     let bestCost = Infinity;
     
@@ -885,8 +806,8 @@
         
         breakdown.innerHTML = `
           Материалы: ${materialsTotals[s].toFixed(2)} ₽<br>
-          Работы: ${opsTotals[s].toFixed(2)} ₽<br>
-          Налог: ${(opsTotals[s] * 0.43).toFixed(2)} ₽
+          Работы: ${opsTotal.toFixed(2)} ₽<br>
+          Налог: ${tax.toFixed(2)} ₽
         `;
         
         if (totals[s] < bestCost) {
@@ -907,7 +828,6 @@
     }
   }
   
-  // === Сохранение в localStorage ===
   function saveToLocalStorage() {
     const data = {
       productName: document.getElementById('productName').value,
@@ -930,50 +850,36 @@
     });
     
     document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
-      const overridePrices = [];
-      [1,2,3,4,5].forEach(s => {
-        overridePrices.push(row.querySelector(`.price-input[data-supplier="${s}"][data-type="spec-material"]`).value);
-      });
-      
       data.specMaterials.push({
         materialIdx: row.querySelector('.material-select').value,
-        qty: row.querySelector('.qty-input').value,
-        overridePrices: overridePrices
+        qty: row.querySelector('.qty-input').value
       });
     });
     
     document.querySelectorAll('#opsTable tbody tr').forEach(row => {
-      const prices = [];
-      [1,2,3,4,5].forEach(s => {
-        prices.push(row.querySelector(`.price-input[data-supplier="${s}"][data-type="op"]`).value);
-      });
-      
       data.operations.push({
         name: row.querySelector('.op-name').value,
-        qty: row.querySelector('.op-qty').value,
-        unit: row.querySelector('.op-unit').value,
-        prices: prices
+        cost: row.querySelector('.op-cost').value
       });
     });
     
     localStorage.setItem('costCalculatorData', JSON.stringify(data));
   }
   
-  // === Загрузка из localStorage ===
   function loadFromLocalStorage() {
     const saved = localStorage.getItem('costCalculatorData');
     if (!saved) {
-      // Данные по умолчанию
       addMaterialRow({name: 'Фанера 4мм', unit: 'лист', prices: ['467', '480', '450', '', '500']});
-      addMaterialRow({name: 'Ткань обивочная', unit: 'пог.м', prices: ['310', '325', '295', '305', '330']});
+      addMaterialRow({name: 'Ткань', unit: 'пог.м', prices: ['310', '325', '295', '305', '330']});
       addMaterialRow({name: 'Ножки Денвер', unit: 'шт', prices: ['860', '890', '840', '870', '910']});
       
       addSpecMaterialRow({materialIdx: '0', qty: '0.6666'});
       addSpecMaterialRow({materialIdx: '1', qty: '1.375'});
       addSpecMaterialRow({materialIdx: '2', qty: '1'});
       
-      addOperationRow({name: 'Склейка спинки', qty: '1', unit: 'шт', prices: ['48', '52', '45', '50', '55']});
-      addOperationRow({name: 'Обивщик', qty: '1', unit: 'шт', prices: ['169.5', '180', '160', '170', '190']});
+      addOperationRow({name: 'Склейка спинки', cost: '48'});
+      addOperationRow({name: 'Обивщик', cost: '169.5'});
+      addOperationRow({name: 'Упаковка', cost: '43.5'});
       
       return;
     }
@@ -989,13 +895,11 @@
     data.operations.forEach(op => addOperationRow(op));
   }
   
-  // === Сохранение (кнопка) ===
   function saveData() {
     saveToLocalStorage();
     showToast('Данные сохранены!', 'success');
   }
   
-  // === Сброс ===
   function resetData() {
     if (confirm('Вы уверены? Все данные будут удалены!')) {
       localStorage.removeItem('costCalculatorData');
@@ -1003,7 +907,6 @@
     }
   }
   
-  // === Экспорт ===
   function exportData() {
     const data = localStorage.getItem('costCalculatorData');
     if (!data) {
@@ -1022,7 +925,6 @@
     showToast('Данные экспортированы!', 'success');
   }
   
-  // === Импорт ===
   function importData(input) {
     const file = input.files[0];
     if (!file) return;
@@ -1042,7 +944,6 @@
     input.value = '';
   }
   
-  // === Toast ===
   function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = message;
