@@ -6,465 +6,630 @@
   <title>Калькулятор себестоимости</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
     
-    /* Шапка */
-    header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    header h1 { font-size: 1.5rem; }
-    .product-name { background: rgba(255,255,255,0.15); padding: 0.5rem 1rem; border-radius: 6px; font-weight: 500; }
-    .product-name-input { background: transparent; border: none; color: white; font-size: 1rem; font-weight: 500; width: 300px; }
-    .product-name-input::placeholder { color: rgba(255,255,255,0.7); }
-    .product-name-input:focus { outline: none; background: rgba(255,255,255,0.2); border-radius: 4px; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f6f8; 
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
     
-    /* Кнопки в шапке */
-    .header-actions { display: flex; gap: 0.5rem; }
-    .btn-save { background: #27ae60; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
-    .btn-save:hover { background: #219a52; }
-    .btn-reset { background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
-    .btn-reset:hover { background: #c0392b; }
-    .btn-export { background: #f39c12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
-    .btn-export:hover { background: #d68910; }
-    .btn-import { background: #9b59b6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
-    .btn-import:hover { background: #8e44ad; }
+    /* Контейнер */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
     
-    /* Вкладки */
-    .tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e0e0; padding: 0 2rem; }
-    .tab-btn { padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 500; color: #666; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 1rem; }
-    .tab-btn.active { color: #2c3e50; border-bottom-color: #3498db; background: #f8f9fa; }
-    .tab-btn:hover { background: #f8f9fa; }
+    /* Заголовок */
+    .header {
+      margin-bottom: 32px;
+    }
     
-    /* Контент вкладок */
-    .tab-content { display: none; padding: 1.5rem 2rem; background: #fff; min-height: 500px; }
-    .tab-content.active { display: block; }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header-subtitle {
+      color: #6b7280;
+      font-size: 15px;
+    }
+    
+    /* Карточки */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-description {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
     
     /* Таблицы */
-    .table-container { overflow-x: auto; margin-bottom: 1.5rem; }
-    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-    th, td { padding: 0.7rem 0.8rem; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
-    th { background: #f8f9fa; font-weight: 600; color: #555; font-size: 0.9rem; white-space: nowrap; }
-    tr:hover { background: #f8f9fa; }
-    th.section-header { background: #e8f4f8; color: #2c3e50; font-weight: 700; }
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    
+    thead {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      white-space: nowrap;
+    }
+    
+    td {
+      padding: 12px 16px;
+      border-top: 1px solid #e5e7eb;
+      vertical-align: middle;
+    }
+    
+    tbody tr:hover {
+      background: #f9fafb;
+    }
     
     /* Поля ввода */
-    input[type="text"], input[type="number"] { 
-      width: 100%; padding: 0.5rem 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; transition: border-color 0.2s;
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      transition: all 0.2s;
     }
-    input[type="number"] { text-align: right; }
-    input:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 2px rgba(52,152,219,0.2); }
-    input[readonly] { background: #f5f5f5; color: #666; cursor: not-allowed; }
-    .price-input { width: 90px; }
-    .cost-display { width: 90px; background: #f0f8ff; border: none; font-weight: 600; color: #2c3e50; }
+    
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    input[type="number"] {
+      text-align: right;
+    }
+    
+    input[readonly] {
+      background: #f9fafb;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+    
+    .input-small {
+      width: 100px;
+    }
+    
+    .input-tiny {
+      width: 70px;
+    }
     
     /* Кнопки */
-    .btn { padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.3rem; }
-    .btn-primary { background: #3498db; color: white; }
-    .btn-primary:hover { background: #2980b9; }
-    .btn-danger { background: #e74c3c; color: white; padding: 0.3rem 0.6rem; }
-    .btn-danger:hover { background: #c0392b; }
-    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    
+    .btn-success {
+      background: #f59e0b;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #d97706;
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    
+    .btn-icon {
+      padding: 6px;
+      width: 32px;
+      height: 32px;
+      justify-content: center;
+    }
+    
+    /* Кнопки действий внизу */
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
     
     /* Секции */
-    .section-title { margin: 1.5rem 0 0.8rem; font-size: 1.1rem; color: #2c3e50; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-    .section-title:first-child { margin-top: 0; }
-    .muted { color: #888; font-size: 0.9rem; }
-    .text-right { text-align: right; }
-    .text-center { text-align: center; }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 24px 0;
+    }
     
     /* Результаты */
-    .results { margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #f8f9fa, #e8f4f8); border-radius: 8px; border-left: 5px solid #3498db; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .results h3 { margin-bottom: 1rem; color: #2c3e50; font-size: 1.2rem; }
-    .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
-    .result-card { background: white; padding: 1.2rem; border-radius: 6px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; border: 2px solid transparent; }
-    .result-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-    .result-card.best { border-color: #27ae60; background: linear-gradient(135deg, #fff, #e8f8f0); }
-    .result-card .supplier { font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; font-weight: 500; }
-    .result-card .cost { font-size: 1.8rem; font-weight: bold; color: #2c3e50; }
-    .result-card .cost small { font-size: 1rem; color: #888; font-weight: normal; }
-    .result-card .breakdown { font-size: 0.8rem; color: #888; margin-top: 0.5rem; line-height: 1.4; }
-    .result-card.best .cost { color: #27ae60; }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
     
-    /* Уведомления */
-    .toast { position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white; padding: 1rem 1.5rem; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.error { background: #e74c3c; }
+    .result-card {
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    .result-card.best {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    
+    .result-card .label {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .result-card .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    
+    .result-card.best .value {
+      color: #10b981;
+    }
+    
+    .result-card .details {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.4;
+    }
+    
+    /* Утилиты */
+    .text-right {
+      text-align: right;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    .muted {
+      color: #6b7280;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
     
     /* Адаптив */
-    @media (max-width: 1400px) {
-      .results-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 900px) {
-      .results-grid { grid-template-columns: repeat(2, 1fr); }
-      .tabs { padding: 0 1rem; }
-      .tab-content { padding: 1rem; }
-      header { padding: 1rem; }
-    }
-    @media (max-width: 600px) {
-      .results-grid { grid-template-columns: 1fr; }
-      .header-actions { flex-wrap: wrap; }
+    @media (max-width: 1200px) {
+      .results-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
     
-    /* Скрытый input для импорта */
-    #importFile { display: none; }
+    @media (max-width: 768px) {
+      .results-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .container {
+        padding: 20px 16px;
+      }
+      
+      .card {
+        padding: 16px;
+      }
+    }
+    
+    /* Иконки */
+    .icon {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    
+    /* Toast уведомления */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1a1a1a;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .toast.success {
+      background: #10b981;
+    }
+    
+    .toast.error {
+      background: #ef4444;
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>🧮 Калькулятор себестоимости</h1>
-  <div class="product-name">
-    <input type="text" class="product-name-input" id="productName" placeholder="Название изделия" value="Стул Токио">
-  </div>
-  <div class="header-actions">
-    <button class="btn-save" onclick="saveData()">💾 Сохранить</button>
-    <button class="btn-export" onclick="exportData()">📤 Экспорт</button>
-    <button class="btn-import" onclick="document.getElementById('importFile').click()">📥 Импорт</button>
-    <input type="file" id="importFile" accept=".json" onchange="importData(this)">
-    <button class="btn-reset" onclick="resetData()">🗑️ Сброс</button>
-  </div>
-</header>
-
-<!-- Вкладки -->
-<div class="tabs">
-  <button class="tab-btn active" data-tab="materials">📦 1. Справочник материалов</button>
-  <button class="tab-btn" data-tab="spec">📋 2. Спецификация изделия</button>
-</div>
-
-<!-- Вкладка 1: Справочник материалов -->
-<div id="materials" class="tab-content active">
-  <p class="muted" style="margin-bottom: 1rem;">Заведите все материалы и укажите цены у 5 разных поставщиков. Оставьте поле пустым, если поставщик не работает с этим материалом.</p>
+<div class="container">
   
-  <div class="section-title">
-    <span>Материалы и цены</span>
-    <button class="btn btn-primary btn-sm" onclick="addMaterialRow()">+ Добавить материал</button>
+  <!-- Заголовок -->
+  <div class="header">
+    <h1>
+      📦 Калькулятор себестоимости
+      <input type="text" placeholder="Название изделия" value="Стул Токио" style="width: 300px; margin-left: 16px; font-size: 20px; font-weight: 600;">
+    </h1>
+    <div class="header-subtitle">Расчёт стоимости изделия с учётом материалов, работ и налогов</div>
   </div>
   
-  <div class="table-container">
-    <table id="materialsTable">
-      <thead>
-        <tr>
-          <th width="35%">Наименование</th>
-          <th width="10%">Ед. изм.</th>
-          <th width="8%">Цена 1</th>
-          <th width="8%">Цена 2</th>
-          <th width="8%">Цена 3</th>
-          <th width="8%">Цена 4</th>
-          <th width="8%">Цена 5</th>
-          <th width="5%"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Строки добавляются через JS -->
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Вкладка 2: Спецификация -->
-<div id="spec" class="tab-content">
-  
-  <!-- Блок: Материалы в изделии -->
-  <div class="section-title">
-    <span>📦 Материалы в изделии</span>
-    <button class="btn btn-primary btn-sm" onclick="addSpecMaterialRow()">+ Добавить материал</button>
-  </div>
-  <p class="muted" style="margin-bottom:1rem">Выберите материал из справочника и укажите расход на 1 изделие. Цены подтягиваются автоматически из Вкладки 1.</p>
-  
-  <div class="table-container">
-    <table id="specMaterialsTable">
-      <thead>
-        <tr>
-          <th width="25%">Материал</th>
-          <th width="8%">Расход</th>
-          <th width="8%">Ед.изм.</th>
-          <th width="8%">Цена 1</th>
-          <th width="8%">Ст-сть 1</th>
-          <th width="8%">Цена 2</th>
-          <th width="8%">Ст-сть 2</th>
-          <th width="8%">Цена 3</th>
-          <th width="8%">Ст-сть 3</th>
-          <th width="8%">Цена 4</th>
-          <th width="8%">Ст-сть 4</th>
-          <th width="8%">Цена 5</th>
-          <th width="8%">Ст-сть 5</th>
-          <th width="4%"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Строки добавляются через JS -->
-      </tbody>
-    </table>
+  <!-- Вкладка 1: Справочник материалов -->
+  <div class="card">
+    <div class="section-header">
+      <div>
+        <div class="card-title">📦 Справочник материалов и цен</div>
+        <div class="card-description">Заведите все материалы и укажите цены у 5 разных поставщиков</div>
+      </div>
+      <button class="btn btn-primary" onclick="addMaterialRow()">+ Добавить материал</button>
+    </div>
+    
+    <div class="table-wrapper">
+      <table id="materialsTable">
+        <thead>
+          <tr>
+            <th>Наименование</th>
+            <th>Ед. изм.</th>
+            <th>Цена 1</th>
+            <th>Цена 2</th>
+            <th>Цена 3</th>
+            <th>Цена 4</th>
+            <th>Цена 5</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Пример строки -->
+          <tr>
+            <td><input type="text" value="Фанера 4мм"></td>
+            <td><input type="text" value="лист" class="input-small"></td>
+            <td><input type="number" value="467" step="0.01"></td>
+            <td><input type="number" value="480" step="0.01"></td>
+            <td><input type="number" value="450" step="0.01"></td>
+            <td><input type="number" value="" step="0.01" placeholder="-"></td>
+            <td><input type="number" value="500" step="0.01"></td>
+            <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+          </tr>
+          <tr>
+            <td><input type="text" value="Ткань обивочная"></td>
+            <td><input type="text" value="пог.м" class="input-small"></td>
+            <td><input type="number" value="310" step="0.01"></td>
+            <td><input type="number" value="325" step="0.01"></td>
+            <td><input type="number" value="295" step="0.01"></td>
+            <td><input type="number" value="305" step="0.01"></td>
+            <td><input type="number" value="330" step="0.01"></td>
+            <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   
-  <!-- Блок: Работы -->
-  <div class="section-title">
-    <span>⚙️ Работы / Операции</span>
-    <button class="btn btn-primary btn-sm" onclick="addOperationRow()">+ Добавить работу</button>
+  <!-- Вкладка 2: Материалы в изделии -->
+  <div class="card">
+    <div class="section-header">
+      <div>
+        <div class="card-title">📦 Материалы в изделии</div>
+        <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие</div>
+      </div>
+      <button class="btn btn-primary" onclick="addSpecMaterialRow()">+ Добавить материал</button>
+    </div>
+    
+    <div class="table-wrapper">
+      <table id="specMaterialsTable">
+        <thead>
+          <tr>
+            <th>Материал</th>
+            <th>Расход</th>
+            <th>Ед.изм.</th>
+            <th>Цена 1</th>
+            <th>Ст-сть 1</th>
+            <th>Цена 2</th>
+            <th>Ст-сть 2</th>
+            <th>Цена 3</th>
+            <th>Ст-сть 3</th>
+            <th>Цена 4</th>
+            <th>Ст-сть 4</th>
+            <th>Цена 5</th>
+            <th>Ст-сть 5</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select>
+                <option>Фанера 4мм</option>
+                <option>Ткань обивочная</option>
+              </select>
+            </td>
+            <td><input type="number" value="0.6666" step="0.0001" class="input-small"></td>
+            <td><input type="text" value="лист" readonly class="input-small"></td>
+            <td><input type="number" value="467" readonly class="input-tiny"></td>
+            <td><input type="text" value="311.33" readonly class="input-tiny"></td>
+            <td><input type="number" value="480" readonly class="input-tiny"></td>
+            <td><input type="text" value="320.00" readonly class="input-tiny"></td>
+            <td><input type="number" value="450" readonly class="input-tiny"></td>
+            <td><input type="text" value="300.00" readonly class="input-tiny"></td>
+            <td><input type="number" value="" readonly class="input-tiny" placeholder="-"></td>
+            <td><input type="text" value="" readonly class="input-tiny" placeholder="-"></td>
+            <td><input type="number" value="500" readonly class="input-tiny"></td>
+            <td><input type="text" value="333.30" readonly class="input-tiny"></td>
+            <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <p class="muted" style="margin-bottom:1rem">Укажите стоимость работ для каждого поставщика (может отличаться из-за логистики, аутсорса и т.д.)</p>
   
-  <div class="table-container">
-    <table id="opsTable">
-      <thead>
-        <tr>
-          <th width="25%">Наименование операции</th>
-          <th width="8%">Кол-во</th>
-          <th width="8%">Ед.изм.</th>
-          <th width="8%">Цена 1</th>
-          <th width="8%">Ст-сть 1</th>
-          <th width="8%">Цена 2</th>
-          <th width="8%">Ст-сть 2</th>
-          <th width="8%">Цена 3</th>
-          <th width="8%">Ст-сть 3</th>
-          <th width="8%">Цена 4</th>
-          <th width="8%">Ст-сть 4</th>
-          <th width="8%">Цена 5</th>
-          <th width="8%">Ст-сть 5</th>
-          <th width="4%"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Строки добавляются через JS -->
-      </tbody>
-      <tfoot>
-        <tr class="section-header">
-          <td colspan="3"><strong>⚙️ Итого работ (без налога)</strong></td>
-          <td class="text-right" id="ops-total-1">0.00</td>
-          <td></td>
-          <td class="text-right" id="ops-total-2">0.00</td>
-          <td></td>
-          <td class="text-right" id="ops-total-3">0.00</td>
-          <td></td>
-          <td class="text-right" id="ops-total-4">0.00</td>
-          <td></td>
-          <td class="text-right" id="ops-total-5">0.00</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="section-header" style="background: #fff3cd;">
-          <td colspan="3"><strong>🧾 Налог (43% от работ)</strong></td>
-          <td class="text-right" id="tax-1">0.00</td>
-          <td></td>
-          <td class="text-right" id="tax-2">0.00</td>
-          <td></td>
-          <td class="text-right" id="tax-3">0.00</td>
-          <td></td>
-          <td class="text-right" id="tax-4">0.00</td>
-          <td></td>
-          <td class="text-right" id="tax-5">0.00</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
+  <!-- Работы / Операции -->
+  <div class="card">
+    <div class="section-header">
+      <div>
+        <div class="card-title">⚙️ Работы / Операции</div>
+        <div class="card-description">Укажите стоимость работ для каждого поставщика</div>
+      </div>
+      <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
+    </div>
+    
+    <div class="table-wrapper">
+      <table id="opsTable">
+        <thead>
+          <tr>
+            <th>Наименование операции</th>
+            <th>Кол-во</th>
+            <th>Ед.изм.</th>
+            <th>Цена 1</th>
+            <th>Ст-сть 1</th>
+            <th>Цена 2</th>
+            <th>Ст-сть 2</th>
+            <th>Цена 3</th>
+            <th>Ст-сть 3</th>
+            <th>Цена 4</th>
+            <th>Ст-сть 4</th>
+            <th>Цена 5</th>
+            <th>Ст-сть 5</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" value="Склейка спинки"></td>
+            <td><input type="number" value="1" step="0.01" class="input-tiny"></td>
+            <td><input type="text" value="шт" class="input-small"></td>
+            <td><input type="number" value="48" step="0.01" class="input-tiny"></td>
+            <td><input type="text" value="48.00" readonly class="input-tiny"></td>
+            <td><input type="number" value="52" step="0.01" class="input-tiny"></td>
+            <td><input type="text" value="52.00" readonly class="input-tiny"></td>
+            <td><input type="number" value="45" step="0.01" class="input-tiny"></td>
+            <td><input type="text" value="45.00" readonly class="input-tiny"></td>
+            <td><input type="number" value="50" step="0.01" class="input-tiny"></td>
+            <td><input type="text" value="50.00" readonly class="input-tiny"></td>
+            <td><input type="number" value="55" step="0.01" class="input-tiny"></td>
+            <td><input type="text" value="55.00" readonly class="input-tiny"></td>
+            <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+          </tr>
+        </tbody>
+        <tfoot style="background: #f9fafb;">
+          <tr style="font-weight: 600;">
+            <td colspan="3">⚙️ Итого работ (без налога)</td>
+            <td class="text-right" id="ops-total-1">48.00</td>
+            <td></td>
+            <td class="text-right" id="ops-total-2">52.00</td>
+            <td></td>
+            <td class="text-right" id="ops-total-3">45.00</td>
+            <td></td>
+            <td class="text-right" id="ops-total-4">50.00</td>
+            <td></td>
+            <td class="text-right" id="ops-total-5">55.00</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="background: #fef3c7; font-weight: 600;">
+            <td colspan="3">🧾 Налог (43% от работ)</td>
+            <td class="text-right" id="tax-1">20.64</td>
+            <td></td>
+            <td class="text-right" id="tax-2">22.36</td>
+            <td></td>
+            <td class="text-right" id="tax-3">19.35</td>
+            <td></td>
+            <td class="text-right" id="tax-4">21.50</td>
+            <td></td>
+            <td class="text-right" id="tax-5">23.65</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
   
   <!-- Результаты -->
-  <div class="results">
-    <h3>💰 Себестоимость по поставщикам (на 1 изделие)</h3>
-    <p class="muted" style="margin-bottom:1rem">Расчёт: (Материалы × Расход) + Работы + Налог (43%)</p>
+  <div class="card">
+    <div class="card-title">💰 Себестоимость по поставщикам</div>
+    <div class="card-description">Расчёт: (Материалы × Расход) + Работы + Налог (43%)</div>
     
     <div class="results-grid">
-      <div class="result-card" id="card-1">
-        <div class="supplier">Поставщик 1</div>
-        <div class="cost" id="res-1">0 <small>₽</small></div>
-        <div class="breakdown" id="breakdown-1"></div>
+      <div class="result-card">
+        <div class="label">Поставщик 1</div>
+        <div class="value">3 404 ₽</div>
+        <div class="details">
+          Материалы: 2 807 ₽<br>
+          Работы: 48 ₽<br>
+          Налог: 21 ₽
+        </div>
       </div>
-      <div class="result-card" id="card-2">
-        <div class="supplier">Поставщик 2</div>
-        <div class="cost" id="res-2">0 <small>₽</small></div>
-        <div class="breakdown" id="breakdown-2"></div>
+      <div class="result-card">
+        <div class="label">Поставщик 2</div>
+        <div class="value">3 520 ₽</div>
+        <div class="details">
+          Материалы: 2 910 ₽<br>
+          Работы: 52 ₽<br>
+          Налог: 22 ₽
+        </div>
       </div>
-      <div class="result-card" id="card-3">
-        <div class="supplier">Поставщик 3</div>
-        <div class="cost" id="res-3">0 <small>₽</small></div>
-        <div class="breakdown" id="breakdown-3"></div>
+      <div class="result-card best">
+        <div class="label">Поставщик 3</div>
+        <div class="value">3 286 ₽</div>
+        <div class="details">
+          Материалы: 2 715 ₽<br>
+          Работы: 45 ₽<br>
+          Налог: 19 ₽
+        </div>
       </div>
-      <div class="result-card" id="card-4">
-        <div class="supplier">Поставщик 4</div>
-        <div class="cost" id="res-4">0 <small>₽</small></div>
-        <div class="breakdown" id="breakdown-4"></div>
+      <div class="result-card">
+        <div class="label">Поставщик 4</div>
+        <div class="value">3 450 ₽</div>
+        <div class="details">
+          Материалы: 2 850 ₽<br>
+          Работы: 50 ₽<br>
+          Налог: 22 ₽
+        </div>
       </div>
-      <div class="result-card" id="card-5">
-        <div class="supplier">Поставщик 5</div>
-        <div class="cost" id="res-5">0 <small>₽</small></div>
-        <div class="breakdown" id="breakdown-5"></div>
+      <div class="result-card">
+        <div class="label">Поставщик 5</div>
+        <div class="value">3 680 ₽</div>
+        <div class="details">
+          Материалы: 3 050 ₽<br>
+          Работы: 55 ₽<br>
+          Налог: 24 ₽
+        </div>
       </div>
+    </div>
+    
+    <!-- Кнопки действий -->
+    <div class="actions-bar">
+      <button class="btn btn-success">Сохранить изменения</button>
+      <button class="btn btn-secondary">Создать копию</button>
+      <button class="btn btn-danger">Удалить</button>
+      <div style="flex: 1;"></div>
+      <button class="btn btn-primary">📤 Экспорт</button>
     </div>
   </div>
   
 </div>
 
-<!-- Уведомление -->
+<!-- Toast уведомление -->
 <div class="toast" id="toast">Данные сохранены!</div>
 
 <script>
-  // === Глобальные данные ===
-  let materialsData = [];
-  let specMaterialsData = [];
-  let operationsData = [];
-  
-  // === Инициализация ===
-  document.addEventListener('DOMContentLoaded', () => {
-    loadFromLocalStorage();
-    setupTabs();
-    setupAutoRecalculate();
-    recalculate();
-  });
-  
-  // === Вкладки ===
-  function setupTabs() {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
-    });
-  }
-  
-  // === Автопересчёт при изменении полей ===
-  function setupAutoRecalculate() {
-    document.addEventListener('input', (e) => {
-      if (e.target.classList.contains('price-input') || 
-          e.target.classList.contains('qty-input') || 
-          e.target.classList.contains('op-qty') ||
-          e.target.classList.contains('material-name') ||
-          e.target.classList.contains('material-unit')) {
-        recalculate();
-      }
-    });
-  }
-  
-  // === Вкладка 1: Добавить материал ===
-  function addMaterialRow(data = null) {
-    const tbody = document.querySelector('#materialsTable tbody');
-    const row = document.createElement('tr');
-    
-    const name = data?.name || '';
-    const unit = data?.unit || 'шт';
-    const prices = data?.prices || ['', '', '', '', ''];
-    
-    row.innerHTML = `
-      <td><input type="text" class="material-name" value="${name}" placeholder="Название материала"></td>
-      <td><input type="text" class="material-unit" value="${unit}" style="width:70px"></td>
-      ${[1,2,3,4,5].map(s => `
-        <td><input type="number" class="price-input" data-supplier="${s}" value="${prices[s-1] || ''}" step="0.01" placeholder="-"></td>
-      `).join('')}
-      <td class="text-center"><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">✕</button></td>
-    `;
-    tbody.appendChild(row);
-  }
-  
-  // === Вкладка 2: Добавить материал в спецификацию ===
-  function addSpecMaterialRow(data = null) {
-    const tbody = document.querySelector('#specMaterialsTable tbody');
-    const row = document.createElement('tr');
-    
-    const materialIdx = data?.materialIdx ?? '';
-    const qty = data?.qty || 1;
-    
-    // Получаем список материалов из вкладки 1
-    const materialOptions = getMaterialOptions();
-    
-    row.innerHTML = `
-      <td>
-        <select class="material-select" onchange="updateSpecMaterialRow(this)">
-          <option value="">-- Выберите материал --</option>
-          ${materialOptions}
-        </select>
-      </td>
-      <td><input type="number" class="qty-input" value="${qty}" step="0.0001" min="0"></td>
-      <td><input type="text" class="spec-unit" value="" readonly style="background:#f5f5f5"></td>
-      ${[1,2,3,4,5].map(s => `
-        <td><input type="number" class="price-input" data-supplier="${s}" data-type="spec-material" value="" step="0.01" placeholder="-"></td>
-        <td><input type="text" class="cost-display" data-supplier="${s}" data-type="spec-material-cost" value="" readonly></td>
-      `).join('')}
-      <td class="text-center"><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">✕</button></td>
-    `;
-    tbody.appendChild(row);
-    
-    // Если есть сохранённые данные
-    if (materialIdx !== '') {
-      const select = row.querySelector('.material-select');
-      select.value = materialIdx;
-      updateSpecMaterialRow(select);
-      
-      // Восстанавливаем переопределённые цены
-      if (data?.overridePrices) {
-        [1,2,3,4,5].forEach(s => {
-          const priceInput = row.querySelector(`.price-input[data-supplier="${s}"]`);
-          if (data.overridePrices[s-1] !== undefined && data.overridePrices[s-1] !== '') {
-            priceInput.value = data.overridePrices[s-1];
-          }
-        });
-      }
-    }
-    
-    recalculate();
-  }
-  
-  // Обновление строки спецификации при выборе материала
-  function updateSpecMaterialRow(select) {
-    const row = select.closest('tr');
-    const materialIdx = select.value;
-    
-    if (materialIdx === '') {
-      row.querySelector('.spec-unit').value = '';
-      [1,2,3,4,5].forEach(s => {
-        row.querySelector(`.price-input[data-supplier="${s}"]`).value = '';
-        row.querySelector(`.cost-display[data-supplier="${s}"]`).value = '';
-      });
-      recalculate();
-      return;
-    }
-    
-    const materialRow = document.querySelectorAll('#materialsTable tbody tr')[materialIdx];
-    if (!materialRow) return;
-    
-    // Копируем единицу измерения
-    const unit = materialRow.querySelector('.material-unit').value;
-    row.querySelector('.spec-unit').value = unit;
-    
-    // Подтягиваем цены из Вкладки 1
-    [1,2,3,4,5].forEach(s => {
-      const priceInput = materialRow.querySelector(`.price-input[data-supplier="${s}"]`);
-      const specPriceInput = row.querySelector(`.price-input[data-supplier="${s}"][data-type="spec-material"]`);
-      
-      // Если цена есть в справочнике и не переопределена вручную
-      if (priceInput.value && !specPriceInput.dataset.overridden) {
-        specPriceInput.value = priceInput.value;
-      }
-    });
-    
-    recalculate();
-  }
-  
-  // === Вкладка 2: Добавить операцию ===
-  function addOperationRow(data = null) {
-    const tbody = document.querySelector('#opsTable tbody');
-    const row = document.createElement('tr');
-    
-    const name = data?.name || '';
-    const qty = data?.qty || 1;
-    const unit = data?.unit || 'шт';
-    const prices = data?.prices || ['', '', '', '', ''];
-    
-    row.innerHTML = `
-      <td><input type="text" class="op-name" value="${name}" placeholder="Название операции"></td>
-      <td><input type="number" class="op-qty" value="${qty}" step="0.01" min="0"></td>
-      <td><input type="text" class="op-unit" value="${unit}" style="width:70px"></td>
-      ${[1,2,3,4,5].map(s => `
-        <td><input type="number" class="price-input" data-supplier="${s}" data-type="op" value="${prices[s-1] || ''}" step="0.01" placeholder="-"></td>
-        <td><input type="text" class="cost-display" data-supplier="${s}" data-type="op-cost" value="" readonly></td>
-      `).join('')}
-      <td class="text-center"><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">✕</button></td>
-    `;
-    tbody.appendChild(row);
-    recalculate();
-  }
-  
-  // === Удаление строки ===
+  // Удаление строки
   function deleteRow(btn) {
     if (confirm('Удалить строку?')) {
       btn.closest('tr').remove();
@@ -472,278 +637,95 @@
     }
   }
   
-  // === Получить опции материалов для выпадающего списка ===
-  function getMaterialOptions() {
-    return Array.from(document.querySelectorAll('#materialsTable tbody tr'))
-      .map((row, idx) => {
-        const name = row.querySelector('.material-name').value || `Материал #${idx+1}`;
-        return `<option value="${idx}">${name}</option>`;
-      })
-      .join('');
+  // Добавление материала (заглушка)
+  function addMaterialRow() {
+    const tbody = document.querySelector('#materialsTable tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" placeholder="Название материала"></td>
+      <td><input type="text" value="шт" class="input-small"></td>
+      <td><input type="number" step="0.01" placeholder="-"></td>
+      <td><input type="number" step="0.01" placeholder="-"></td>
+      <td><input type="number" step="0.01" placeholder="-"></td>
+      <td><input type="number" step="0.01" placeholder="-"></td>
+      <td><input type="number" step="0.01" placeholder="-"></td>
+      <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+    `;
+    tbody.appendChild(row);
   }
   
-  // === Пересчёт себестоимости ===
+  // Добавление материала в спецификацию (заглушка)
+  function addSpecMaterialRow() {
+    const tbody = document.querySelector('#specMaterialsTable tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>
+        <select>
+          <option>-- Выберите материал --</option>
+          <option>Фанера 4мм</option>
+          <option>Ткань обивочная</option>
+        </select>
+      </td>
+      <td><input type="number" value="1" step="0.0001" class="input-small"></td>
+      <td><input type="text" value="шт" readonly class="input-small"></td>
+      <td><input type="number" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+    `;
+    tbody.appendChild(row);
+  }
+  
+  // Добавление операции (заглушка)
+  function addOperationRow() {
+    const tbody = document.querySelector('#opsTable tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" placeholder="Название операции"></td>
+      <td><input type="number" value="1" step="0.01" class="input-tiny"></td>
+      <td><input type="text" value="шт" class="input-small"></td>
+      <td><input type="number" step="0.01" class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" step="0.01" class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" step="0.01" class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" step="0.01" class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td><input type="number" step="0.01" class="input-tiny" placeholder="-"></td>
+      <td><input type="text" readonly class="input-tiny" placeholder="-"></td>
+      <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+    `;
+    tbody.appendChild(row);
+  }
+  
+  // Пересчёт (заглушка)
   function recalculate() {
-    // Инициализируем суммы по поставщикам
-    const materialsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-    const opsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-    
-    // 1. Считаем материалы из спецификации
-    document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
-      const materialIdx = row.querySelector('.material-select').value;
-      const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
-      
-      if (materialIdx === '' || qty === 0) return;
-      
-      [1,2,3,4,5].forEach(s => {
-        const priceInput = row.querySelector(`.price-input[data-supplier="${s}"][data-type="spec-material"]`);
-        const costDisplay = row.querySelector(`.cost-display[data-supplier="${s}"][data-type="spec-material-cost"]`);
-        
-        const price = parseFloat(priceInput.value) || 0;
-        const cost = price * qty;
-        
-        costDisplay.value = cost > 0 ? cost.toFixed(2) : '';
-        materialsTotals[s] += cost;
-      });
-    });
-    
-    // 2. Считаем работы
-    document.querySelectorAll('#opsTable tbody tr').forEach(row => {
-      const qty = parseFloat(row.querySelector('.op-qty').value) || 0;
-      
-      if (qty === 0) return;
-      
-      [1,2,3,4,5].forEach(s => {
-        const priceInput = row.querySelector(`.price-input[data-supplier="${s}"][data-type="op"]`);
-        const costDisplay = row.querySelector(`.cost-display[data-supplier="${s}"][data-type="op-cost"]`);
-        
-        const price = parseFloat(priceInput.value) || 0;
-        const cost = price * qty;
-        
-        costDisplay.value = cost > 0 ? cost.toFixed(2) : '';
-        opsTotals[s] += cost;
-      });
-    });
-    
-    // 3. Обновляем итоги работ в таблице
-    [1,2,3,4,5].forEach(s => {
-      document.getElementById(`ops-total-${s}`).textContent = opsTotals[s].toFixed(2);
-      
-      // 4. Считаем налог (43%)
-      const tax = opsTotals[s] * 0.43;
-      document.getElementById(`tax-${s}`).textContent = tax.toFixed(2);
-    });
-    
-    // 5. Итоговая себестоимость
-    const totals = {};
-    [1,2,3,4,5].forEach(s => {
-      totals[s] = materialsTotals[s] + opsTotals[s] + (opsTotals[s] * 0.43);
-    });
-    
-    // 6. Отображаем результаты
-    displayResults(totals, materialsTotals, opsTotals);
-    
-    // 7. Сохраняем данные
-    saveToLocalStorage();
+    // Здесь будет логика пересчёта
+    showToast('Расчёт обновлён', 'success');
   }
   
-  // === Отображение результатов ===
-  function displayResults(totals, materialsTotals, opsTotals) {
-    let bestSupplier = null;
-    let bestCost = Infinity;
-    
-    [1,2,3,4,5].forEach(s => {
-      const el = document.getElementById(`res-${s}`);
-      const card = document.getElementById(`card-${s}`);
-      const breakdown = document.getElementById(`breakdown-${s}`);
-      
-      if (totals[s] > 0) {
-        el.innerHTML = `${Math.round(totals[s]).toLocaleString('ru-RU')} <small>₽</small>`;
-        
-        // Детализация
-        breakdown.innerHTML = `
-          Материалы: ${materialsTotals[s].toFixed(2)} ₽<br>
-          Работы: ${opsTotals[s].toFixed(2)} ₽<br>
-          Налог: ${(opsTotals[s] * 0.43).toFixed(2)} ₽
-        `;
-        
-        // Поиск лучшего
-        if (totals[s] < bestCost) {
-          bestCost = totals[s];
-          bestSupplier = s;
-        }
-        
-        card.classList.remove('best');
-      } else {
-        el.innerHTML = '— <small>₽</small>';
-        breakdown.innerHTML = '';
-        card.classList.remove('best');
-      }
-    });
-    
-    // Подсветка лучшего варианта
-    if (bestSupplier) {
-      document.getElementById(`card-${bestSupplier}`).classList.add('best');
-    }
-  }
-  
-  // === Сохранение в localStorage ===
-  function saveToLocalStorage() {
-    const data = {
-      productName: document.getElementById('productName').value,
-      materials: [],
-      specMaterials: [],
-      operations: []
-    };
-    
-    // Сохраняем материалы из Вкладки 1
-    document.querySelectorAll('#materialsTable tbody tr').forEach(row => {
-      const prices = [];
-      [1,2,3,4,5].forEach(s => {
-        prices.push(row.querySelector(`.price-input[data-supplier="${s}"]`).value);
-      });
-      
-      data.materials.push({
-        name: row.querySelector('.material-name').value,
-        unit: row.querySelector('.material-unit').value,
-        prices: prices
-      });
-    });
-    
-    // Сохраняем спецификацию материалов
-    document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
-      const overridePrices = [];
-      [1,2,3,4,5].forEach(s => {
-        overridePrices.push(row.querySelector(`.price-input[data-supplier="${s}"][data-type="spec-material"]`).value);
-      });
-      
-      data.specMaterials.push({
-        materialIdx: row.querySelector('.material-select').value,
-        qty: row.querySelector('.qty-input').value,
-        overridePrices: overridePrices
-      });
-    });
-    
-    // Сохраняем операции
-    document.querySelectorAll('#opsTable tbody tr').forEach(row => {
-      const prices = [];
-      [1,2,3,4,5].forEach(s => {
-        prices.push(row.querySelector(`.price-input[data-supplier="${s}"][data-type="op"]`).value);
-      });
-      
-      data.operations.push({
-        name: row.querySelector('.op-name').value,
-        qty: row.querySelector('.op-qty').value,
-        unit: row.querySelector('.op-unit').value,
-        prices: prices
-      });
-    });
-    
-    localStorage.setItem('costCalculatorData', JSON.stringify(data));
-  }
-  
-  // === Загрузка из localStorage ===
-  function loadFromLocalStorage() {
-    const saved = localStorage.getItem('costCalculatorData');
-    if (!saved) {
-      // Данные по умолчанию
-      addMaterialRow({name: 'Фанера 4мм', unit: 'лист', prices: ['467', '480', '450', '', '500']});
-      addMaterialRow({name: 'Фанера 18мм', unit: 'лист', prices: ['1743', '1800', '1700', '', '1900']});
-      addMaterialRow({name: 'Ткань', unit: 'пог.м', prices: ['310', '325', '295', '305', '330']});
-      addMaterialRow({name: 'Ножки Денвер', unit: 'шт', prices: ['860', '890', '840', '870', '910']});
-      
-      addSpecMaterialRow({materialIdx: '0', qty: '0.6666666667'});
-      addSpecMaterialRow({materialIdx: '1', qty: '0.11'});
-      addSpecMaterialRow({materialIdx: '2', qty: '1.375'});
-      addSpecMaterialRow({materialIdx: '3', qty: '1'});
-      
-      addOperationRow({name: 'Склейка спинки', qty: '1', unit: 'шт', prices: ['48', '52', '45', '50', '55']});
-      addOperationRow({name: 'Обивщик', qty: '1', unit: 'шт', prices: ['169.5', '180', '160', '170', '190']});
-      addOperationRow({name: 'Упаковка', qty: '1', unit: 'шт', prices: ['43.5', '45', '40', '44', '48']});
-      
-      return;
-    }
-    
-    const data = JSON.parse(saved);
-    
-    // Восстанавливаем название изделия
-    if (data.productName) {
-      document.getElementById('productName').value = data.productName;
-    }
-    
-    // Восстанавливаем материалы
-    data.materials.forEach(mat => addMaterialRow(mat));
-    
-    // Восстанавливаем спецификацию
-    data.specMaterials.forEach(spec => addSpecMaterialRow(spec));
-    
-    // Восстанавливаем операции
-    data.operations.forEach(op => addOperationRow(op));
-  }
-  
-  // === Сохранение данных (кнопка) ===
-  function saveData() {
-    saveToLocalStorage();
-    showToast('Данные сохранены!', 'success');
-  }
-  
-  // === Сброс данных ===
-  function resetData() {
-    if (confirm('Вы уверены? Все данные будут удалены!')) {
-      localStorage.removeItem('costCalculatorData');
-      location.reload();
-    }
-  }
-  
-  // === Экспорт данных ===
-  function exportData() {
-    const data = localStorage.getItem('costCalculatorData');
-    if (!data) {
-      showToast('Нет данных для экспорта', 'error');
-      return;
-    }
-    
-    const blob = new Blob([data], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cost-calculator-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    showToast('Данные экспортированы!', 'success');
-  }
-  
-  // === Импорт данных ===
-  function importData(input) {
-    const file = input.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        localStorage.setItem('costCalculatorData', JSON.stringify(data));
-        location.reload();
-        showToast('Данные импортированы!', 'success');
-      } catch (err) {
-        showToast('Ошибка импорта: неверный формат файла', 'error');
-      }
-    };
-    reader.readAsText(file);
-    input.value = ''; // Сброс input
-  }
-  
-  // === Уведомления ===
+  // Toast уведомление
   function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = message;
-    toast.className = 'toast show ' + (type === 'error' ? 'error' : '');
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
+    toast.className = 'toast show ' + type;
+    setTimeout(() => toast.classList.remove('show'), 3000);
   }
+  
+  // Автопересчёт при изменении
+  document.addEventListener('input', (e) => {
+    if (e.target.tagName === 'INPUT') {
+      // recalculate(); // Раскомментировать для автопересчёта
+    }
+  });
 </script>
 
 </body>
