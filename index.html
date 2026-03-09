@@ -493,7 +493,7 @@
           <div class="card-title">
             <input type="text" id="currentSpecName" value="Новое изделие" 
               style="font-size: 18px; font-weight: 600; border: none; background: transparent; width: 400px;"
-              onchange="updateSpecName(this.value)">
+              onblur="updateSpecName(this.value)">
           </div>
           <div class="card-description">Редактируйте название изделия и ставку налога</div>
         </div>
@@ -504,7 +504,7 @@
       
       <div class="tax-setting">
         <label for="taxRate">Ставка налога (%):</label>
-        <input type="number" id="taxRate" value="43" min="0" max="100" step="0.1" class="input-tax" onblur="updateTaxRate(this.value)">
+        <input type="number" id="taxRate" value="0" min="0" max="100" step="0.1" class="input-tax" onblur="updateTaxRate(this.value)">
         <span class="muted">% от стоимости работ</span>
       </div>
     </div>
@@ -568,7 +568,7 @@
             </tr>
             <tr>
               <td></td>
-              <td class="text-right">🧾 Налог (<span id="tax-rate-display">43</span>%)</td>
+              <td class="text-right">🧾 Налог (<span id="tax-rate-display">0</span>%)</td>
               <td class="text-right" id="tax-amount">0.00 ₽</td>
               <td></td>
             </tr>
@@ -620,6 +620,7 @@
   let materialsCatalog = [];
   let specifications = [];
   let currentSpecId = null;
+  let autoSaveTimeout = null;
   
   document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
@@ -632,6 +633,12 @@
   function setupTabs() {
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
+        // Сохраняем текущую спецификацию перед переключением
+        if (currentSpecId) {
+          saveCurrentSpec();
+          saveAll();
+        }
+        
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
@@ -648,9 +655,16 @@
     document.addEventListener('input', (e) => {
       if (e.target.classList.contains('price-input') || 
           e.target.classList.contains('qty-input') || 
-          e.target.classList.contains('op-cost') ||
-          e.target.id === 'taxRate') {
+          e.target.classList.contains('op-cost')) {
         recalculate();
+        // Автосохранение с задержкой
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(() => {
+          if (currentSpecId) {
+            saveCurrentSpec();
+            saveAll();
+          }
+        }, 1000);
       }
     });
   }
@@ -680,7 +694,10 @@
       document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('drag-over'));
       draggedRow = null;
       recalculate();
-      saveAll();
+      if (currentSpecId) {
+        saveCurrentSpec();
+        saveAll();
+      }
     });
     
     tbody.addEventListener('dragover', (e) => {
@@ -726,10 +743,10 @@
     
     row.innerHTML = `
       <td class="text-center"><span class="drag-handle">⋮</span></td>
-      <td class="wrap-text"><input type="text" class="input-material-name material-name" value="${name}" placeholder="Название материала"></td>
-      <td><input type="text" class="material-unit input-small" value="${unit}"></td>
+      <td class="wrap-text"><input type="text" class="input-material-name material-name" value="${name}" placeholder="Название материала" onblur="saveAll()"></td>
+      <td><input type="text" class="material-unit input-small" value="${unit}" onblur="saveAll()"></td>
       ${[1,2,3,4,5].map(s => `
-        <td><input type="number" class="price-input" data-supplier="${s}" value="${prices[s-1] || ''}" step="0.01" placeholder="-"></td>
+        <td><input type="number" class="price-input" data-supplier="${s}" value="${prices[s-1] || ''}" step="0.01" placeholder="-" onblur="saveAll()"></td>
       `).join('')}
       <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteMaterialRow(this)">✕</button></td>
     `;
@@ -750,7 +767,7 @@
     const newSpec = {
       id: Date.now().toString(),
       name: name,
-      taxRate: 43,
+      taxRate: 0,
       materials: [],
       operations: []
     };
@@ -763,17 +780,25 @@
   }
   
   function editSpec(specId) {
+    // Сохраняем текущую спецификацию перед переключением
+    if (currentSpecId) {
+      saveCurrentSpec();
+    }
+    
     document.querySelector('[data-tab="specs"]').click();
     switchSpec(specId);
   }
   
   function backToProducts() {
+    // Сохраняем перед выходом
+    if (currentSpecId) {
+      saveCurrentSpec();
+      saveAll();
+    }
     document.querySelector('[data-tab="products"]').click();
   }
   
   function switchSpec(specId) {
-    if (currentSpecId) saveCurrentSpec();
-    
     currentSpecId = specId;
     
     if (!specId) {
@@ -784,8 +809,9 @@
     if (!spec) return;
     
     document.getElementById('currentSpecName').value = spec.name;
-    document.getElementById('taxRate').value = spec.taxRate || 43;
-    document.getElementById('tax-rate-display').textContent = spec.taxRate || 43;
+    const taxRate = spec.taxRate !== undefined ? spec.taxRate : 0;
+    document.getElementById('taxRate').value = taxRate;
+    document.getElementById('tax-rate-display').textContent = taxRate;
     
     renderSpecMaterials(spec);
     renderSpecOperations(spec);
@@ -810,9 +836,14 @@
       if (!isNaN(parsedRate) && parsedRate >= 0 && parsedRate <= 100) {
         spec.taxRate = parsedRate;
         document.getElementById('tax-rate-display').textContent = parsedRate;
+      } else {
+        spec.taxRate = 0;
+        document.getElementById('tax-rate-display').textContent = '0';
+        document.getElementById('taxRate').value = '0';
       }
       recalculate();
       saveAll();
+      showToast('Ставка налога обновлена', 'success');
     }
   }
   
@@ -838,15 +869,6 @@
           <div class="product-meta">
             <span>📦 Материалов: ${materialsCount}</span>
             <span>⚙️ Работ: ${operationsCount}</span>
-            <span>🧾 Налог: ${spec.taxRate || 43}%</span>
-          </div>
-          <div class="tax-setting">
-            <label>Ставка налога:</label>
-            <input type="number" value="${spec.taxRate || 43}" min="0" max="100" step="0.1" 
-              class="input-tax" 
-              onblur="updateSpecTaxRate('${spec.id}', this.value)"
-              onclick="event.stopPropagation()">
-            <span class="muted">%</span>
           </div>
         </div>
         <div class="product-actions">
@@ -866,40 +888,32 @@
     });
   }
   
-  function updateSpecTaxRate(specId, rate) {
-    const spec = specifications.find(s => s.id === specId);
-    if (spec) {
-      const parsedRate = parseFloat(rate);
-      if (!isNaN(parsedRate) && parsedRate >= 0 && parsedRate <= 100) {
-        spec.taxRate = parsedRate;
-      }
-      saveAll();
-      showToast('Ставка налога обновлена', 'success');
-    }
-  }
-  
   function renderSpecMaterials(spec) {
     const tbody = document.querySelector('#specMaterialsTable tbody');
     tbody.innerHTML = '';
     
-    spec.materials.forEach(mat => {
-      addSpecMaterialRow({
-        materialIdx: mat.materialIdx,
-        qty: mat.qty
-      }, true);
-    });
+    if (spec.materials && spec.materials.length > 0) {
+      spec.materials.forEach(mat => {
+        addSpecMaterialRow({
+          materialIdx: mat.materialIdx,
+          qty: mat.qty
+        }, true);
+      });
+    }
   }
   
   function renderSpecOperations(spec) {
     const tbody = document.querySelector('#opsTable tbody');
     tbody.innerHTML = '';
     
-    spec.operations.forEach(op => {
-      addOperationRow({
-        name: op.name,
-        cost: op.cost
-      }, true);
-    });
+    if (spec.operations && spec.operations.length > 0) {
+      spec.operations.forEach(op => {
+        addOperationRow({
+          name: op.name,
+          cost: op.cost
+        }, true);
+      });
+    }
   }
   
   function addSpecMaterialRow(data = null, silent = false) {
@@ -934,7 +948,11 @@
       updateSpecMaterialRow(select, true);
     }
     
-    if (!silent) recalculate();
+    if (!silent) {
+      recalculate();
+      saveCurrentSpec();
+      saveAll();
+    }
   }
   
   function updateSpecMaterialRow(select, silent = false) {
@@ -946,7 +964,11 @@
       [1,2,3,4,5].forEach(s => {
         row.querySelector(`.cost-display[data-supplier="${s}"]`).value = '';
       });
-      if (!silent) recalculate();
+      if (!silent) {
+        recalculate();
+        saveCurrentSpec();
+        saveAll();
+      }
       return;
     }
     
@@ -956,7 +978,11 @@
     const unit = materialRow.querySelector('.material-unit').value;
     row.querySelector('.spec-unit').value = unit;
     
-    if (!silent) recalculate();
+    if (!silent) {
+      recalculate();
+      saveCurrentSpec();
+      saveAll();
+    }
   }
   
   function addOperationRow(data = null, silent = false) {
@@ -975,13 +1001,18 @@
     `;
     tbody.appendChild(row);
     
-    if (!silent) recalculate();
+    if (!silent) {
+      recalculate();
+      saveCurrentSpec();
+      saveAll();
+    }
   }
   
   function deleteRow(btn) {
     if (confirm('Удалить строку?')) {
       btn.closest('tr').remove();
       recalculate();
+      saveCurrentSpec();
       saveAll();
     }
   }
@@ -1001,7 +1032,7 @@
     const spec = specifications.find(s => s.id === currentSpecId);
     if (!spec) return;
     
-    const taxRate = spec.taxRate || 43;
+    const taxRate = spec.taxRate !== undefined ? spec.taxRate : 0;
     const materialsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
     let opsTotal = 0;
     
@@ -1083,6 +1114,7 @@
     const spec = specifications.find(s => s.id === currentSpecId);
     if (!spec) return;
     
+    // Сохраняем материалы
     spec.materials = [];
     document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
       const materialIdx = row.querySelector('.material-select').value;
@@ -1092,10 +1124,12 @@
       }
     });
     
+    // Сохраняем операции - ВАЖНО: сохраняем все строки, даже с пустой стоимостью
     spec.operations = [];
     document.querySelectorAll('#opsTable tbody tr').forEach(row => {
-      const name = row.querySelector('.op-name').value;
+      const name = row.querySelector('.op-name').value.trim();
       const cost = row.querySelector('.op-cost').value;
+      // Сохраняем если есть имя операции
       if (name) {
         spec.operations.push({ name, cost });
       }
@@ -1103,8 +1137,10 @@
   }
   
   function saveAll() {
+    // Сначала сохраняем текущую спецификацию
     saveCurrentSpec();
     
+    // Сохраняем справочник материалов
     materialsCatalog = [];
     document.querySelectorAll('#materialsTable tbody tr').forEach(row => {
       const prices = [];
@@ -1136,19 +1172,33 @@
       specifications.push({
         id: '1',
         name: 'Стул Токио',
-        taxRate: 43,
+        taxRate: 0,
         materials: [{materialIdx: '0', qty: '0.6666'}, {materialIdx: '1', qty: '1.375'}, {materialIdx: '2', qty: '1'}],
         operations: [{name: 'Склейка спинки', cost: '48'}, {name: 'Обивщик', cost: '169.5'}, {name: 'Упаковка', cost: '43.5'}]
       });
       
       currentSpecId = '1';
       renderProductsList();
+      saveAll();
       return;
     }
     
     const data = JSON.parse(saved);
     materialsCatalog = data.materialsCatalog || [];
     specifications = data.specifications || [];
+    
+    // Убеждаемся что у всех спецификаций есть taxRate
+    specifications.forEach(spec => {
+      if (spec.taxRate === undefined) {
+        spec.taxRate = 0;
+      }
+      if (!spec.materials) {
+        spec.materials = [];
+      }
+      if (!spec.operations) {
+        spec.operations = [];
+      }
+    });
     
     materialsCatalog.forEach(mat => addMaterialRow(mat));
     renderProductsList();
@@ -1168,9 +1218,9 @@
     const newSpec = {
       id: Date.now().toString(),
       name: newName,
-      taxRate: source.taxRate || 43,
-      materials: JSON.parse(JSON.stringify(source.materials)),
-      operations: JSON.parse(JSON.stringify(source.operations))
+      taxRate: source.taxRate !== undefined ? source.taxRate : 0,
+      materials: JSON.parse(JSON.stringify(source.materials || [])),
+      operations: JSON.parse(JSON.stringify(source.operations || []))
     };
     
     specifications.push(newSpec);
