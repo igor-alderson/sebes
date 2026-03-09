@@ -37,30 +37,12 @@
       font-size: 24px;
       font-weight: 600;
       color: #1a1a1a;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .product-input {
-      border: none;
-      font-size: 20px;
-      font-weight: 600;
-      color: #3b82f6;
-      background: #eff6ff;
-      padding: 8px 16px;
-      border-radius: 8px;
-      width: 300px;
-    }
-    
-    .product-input:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
     .header-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
     
     .tabs {
@@ -88,23 +70,11 @@
       gap: 8px;
     }
     
-    .tab-btn:hover {
-      background: #f9fafb;
-      color: #1a1a1a;
-    }
+    .tab-btn:hover { background: #f9fafb; color: #1a1a1a; }
+    .tab-btn.active { background: #3b82f6; color: white; }
     
-    .tab-btn.active {
-      background: #3b82f6;
-      color: white;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     
     .card {
       background: white;
@@ -119,6 +89,8 @@
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
     
     .card-title {
@@ -131,6 +103,33 @@
     .card-description {
       color: #6b7280;
       font-size: 14px;
+    }
+    
+    .spec-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .spec-selector select {
+      padding: 8px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      min-width: 250px;
+      background: white;
+    }
+    
+    .spec-selector select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .spec-actions {
+      display: flex;
+      gap: 8px;
     }
     
     .table-wrapper {
@@ -164,31 +163,17 @@
       vertical-align: middle;
     }
     
-    tbody tr {
-      cursor: move;
-    }
-    
-    tbody tr:hover {
-      background: #f9fafb;
-    }
-    
-    tbody tr.dragging {
-      opacity: 0.5;
-      background: #dbeafe;
-    }
-    
-    tbody tr.drag-over {
-      border-top: 2px solid #3b82f6;
-    }
+    tbody tr { cursor: move; }
+    tbody tr:hover { background: #f9fafb; }
+    tbody tr.dragging { opacity: 0.5; background: #dbeafe; }
+    tbody tr.drag-over { border-top: 2px solid #3b82f6; }
     
     tfoot {
       background: #f9fafb;
       font-weight: 600;
     }
     
-    tfoot tr:last-child {
-      background: #fef3c7;
-    }
+    tfoot tr:last-child { background: #fef3c7; }
     
     input[type="text"],
     input[type="number"],
@@ -210,33 +195,20 @@
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
-    input[type="number"] {
-      text-align: right;
-    }
-    
+    input[type="number"] { text-align: right; }
     input[readonly] {
       background: #f9fafb;
       color: #6b7280;
       cursor: not-allowed;
     }
     
-    /* Увеличенная ширина для наименования */
     .input-material-name {
       width: 100%;
       min-width: 250px;
     }
     
-    .input-small {
-      width: 90px;
-    }
-    
-    .input-tiny {
-      width: 80px;
-    }
-    
-    .input-medium {
-      width: 120px;
-    }
+    .input-small { width: 90px; }
+    .input-tiny { width: 80px; }
     
     .btn {
       padding: 10px 20px;
@@ -251,53 +223,16 @@
       gap: 8px;
     }
     
-    .btn-primary {
-      background: #3b82f6;
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: #2563eb;
-    }
-    
-    .btn-success {
-      background: #f59e0b;
-      color: white;
-    }
-    
-    .btn-success:hover {
-      background: #d97706;
-    }
-    
-    .btn-danger {
-      background: #ef4444;
-      color: white;
-    }
-    
-    .btn-danger:hover {
-      background: #dc2626;
-    }
-    
-    .btn-secondary {
-      background: #6b7280;
-      color: white;
-    }
-    
-    .btn-secondary:hover {
-      background: #4b5563;
-    }
-    
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 13px;
-    }
-    
-    .btn-icon {
-      padding: 6px;
-      width: 32px;
-      height: 32px;
-      justify-content: center;
-    }
+    .btn-primary { background: #3b82f6; color: white; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-success { background: #f59e0b; color: white; }
+    .btn-success:hover { background: #d97706; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-secondary { background: #6b7280; color: white; }
+    .btn-secondary:hover { background: #4b5563; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .btn-icon { padding: 6px; width: 32px; height: 32px; justify-content: center; }
     
     .drag-handle {
       cursor: move;
@@ -306,14 +241,9 @@
       user-select: none;
       font-size: 18px;
     }
+    .drag-handle:hover { color: #3b82f6; }
     
-    .drag-handle:hover {
-      color: #3b82f6;
-    }
-    
-    .results-section {
-      margin-top: 32px;
-    }
+    .results-section { margin-top: 32px; }
     
     .results-grid {
       display: grid;
@@ -350,9 +280,7 @@
       margin-bottom: 8px;
     }
     
-    .result-card.best .value {
-      color: #10b981;
-    }
+    .result-card.best .value { color: #10b981; }
     
     .result-card .details {
       font-size: 12px;
@@ -366,21 +294,13 @@
       margin-top: 32px;
       padding-top: 24px;
       border-top: 2px solid #e5e7eb;
+      flex-wrap: wrap;
     }
     
-    .text-right {
-      text-align: right;
-    }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .muted { color: #6b7280; }
     
-    .text-center {
-      text-align: center;
-    }
-    
-    .muted {
-      color: #6b7280;
-    }
-    
-    /* Перенос текста в ячейках */
     .wrap-text {
       white-space: normal;
       word-wrap: break-word;
@@ -402,43 +322,23 @@
       z-index: 1000;
     }
     
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    
-    .toast.success {
-      background: #10b981;
-    }
-    
-    .toast.error {
-      background: #ef4444;
-    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #10b981; }
+    .toast.error { background: #ef4444; }
     
     @media (max-width: 1200px) {
-      .results-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .results-grid { grid-template-columns: repeat(3, 1fr); }
     }
     
     @media (max-width: 768px) {
-      .results-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .tabs {
-        flex-wrap: wrap;
-      }
-      
-      .tab-btn {
-        flex: 1;
-        min-width: 200px;
-      }
+      .results-grid { grid-template-columns: repeat(2, 1fr); }
+      .tabs { flex-wrap: wrap; }
+      .tab-btn { flex: 1; min-width: 200px; }
+      .header { flex-direction: column; align-items: stretch; }
+      .header-actions { justify-content: center; }
     }
     
-    #importFile {
-      display: none;
-    }
+    #importFile { display: none; }
   </style>
 </head>
 <body>
@@ -446,16 +346,13 @@
 <div class="container">
   
   <div class="header">
-    <h1>
-      📦 Калькулятор себестоимости
-      <input type="text" class="product-input" id="productName" value="Стул Токио" placeholder="Название изделия">
-    </h1>
+    <h1>📦 Калькулятор себестоимости</h1>
     <div class="header-actions">
-      <button class="btn btn-success" onclick="saveData()">💾 Сохранить</button>
-      <button class="btn btn-primary" onclick="exportData()">📤 Экспорт</button>
+      <button class="btn btn-success" onclick="saveAll()">💾 Сохранить</button>
+      <button class="btn btn-primary" onclick="exportAll()">📤 Экспорт</button>
       <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Импорт</button>
-      <input type="file" id="importFile" accept=".json" onchange="importData(this)">
-      <button class="btn btn-danger" onclick="resetData()">🗑️ Сброс</button>
+      <input type="file" id="importFile" accept=".json" onchange="importAll(this)">
+      <button class="btn btn-danger" onclick="resetAll()">🗑️ Сброс</button>
     </div>
   </div>
   
@@ -463,8 +360,8 @@
     <button class="tab-btn active" data-tab="materials">
       📦 1. Справочник материалов
     </button>
-    <button class="tab-btn" data-tab="spec">
-      📋 2. Спецификация изделия
+    <button class="tab-btn" data-tab="specs">
+      📋 2. Спецификации изделий
     </button>
   </div>
   
@@ -474,7 +371,7 @@
       <div class="card-header">
         <div>
           <div class="card-title">Справочник материалов и цен</div>
-          <div class="card-description">Заведите все материалы и укажите цены у 5 разных поставщиков. Перетаскивайте строки для изменения порядка.</div>
+          <div class="card-description">Единая база материалов с ценами от 5 поставщиков. Используется во всех спецификациях.</div>
         </div>
         <button class="btn btn-primary" onclick="addMaterialRow()">+ Добавить материал</button>
       </div>
@@ -494,126 +391,156 @@
               <th width="5%"></th>
             </tr>
           </thead>
-          <tbody>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
   </div>
   
-  <!-- Вкладка 2: Спецификация -->
-  <div id="spec" class="tab-content">
+  <!-- Вкладка 2: Спецификации изделий -->
+  <div id="specs" class="tab-content">
     
-    <!-- Материалы в изделии -->
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">Материалы в изделии</div>
-          <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие. Перетаскивайте строки для изменения порядка.</div>
+          <div class="card-title">Выберите изделие</div>
+          <div class="card-description">Создавайте и управляйте спецификациями разных изделий</div>
         </div>
-        <button class="btn btn-primary" onclick="addSpecMaterialRow()">+ Добавить материал</button>
-      </div>
-      
-      <div class="table-wrapper">
-        <table id="specMaterialsTable">
-          <thead>
-            <tr>
-              <th width="5%"></th>
-              <th width="25%">Материал</th>
-              <th width="10%">Расход</th>
-              <th width="10%">Ед.изм.</th>
-              <th width="9%">Стоимость 1</th>
-              <th width="9%">Стоимость 2</th>
-              <th width="9%">Стоимость 3</th>
-              <th width="9%">Стоимость 4</th>
-              <th width="9%">Стоимость 5</th>
-              <th width="5%"></th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+        <div class="spec-selector">
+          <select id="specSelect" onchange="switchSpec(this.value)">
+            <option value="">-- Создать новое изделие --</option>
+          </select>
+          <div class="spec-actions">
+            <button class="btn btn-primary btn-sm" onclick="createNewSpec()">+ Новое</button>
+            <button class="btn btn-secondary btn-sm" onclick="duplicateSpec()">📋 Копия</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSpec()">🗑️ Удалить</button>
+          </div>
+        </div>
       </div>
     </div>
     
-    <!-- Работы -->
-    <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Работы / Операции</div>
-          <div class="card-description">Укажите стоимость работ (общая для всех поставщиков). Перетаскивайте строки для изменения порядка.</div>
-        </div>
-        <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
-      </div>
+    <div id="specContent" style="display: none;">
       
-      <div class="table-wrapper">
-        <table id="opsTable">
-          <thead>
-            <tr>
-              <th width="5%"></th>
-              <th width="60%">Наименование операции</th>
-              <th width="20%">Стоимость</th>
-              <th width="5%"></th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td></td>
-              <td class="text-right">⚙️ Итого работ (без налога)</td>
-              <td class="text-right" id="ops-total">0.00 ₽</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td class="text-right">🧾 Налог (43% от работ)</td>
-              <td class="text-right" id="tax-amount">0.00 ₽</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-    
-    <!-- Результаты -->
-    <div class="card results-section">
-      <div class="card-title">💰 Себестоимость по поставщикам</div>
-      <div class="card-description" style="margin-bottom: 20px;">Расчёт: Материалы (по поставщикам) + Работы + Налог (43%)</div>
-      
-      <div class="results-grid">
-        <div class="result-card" id="card-1">
-          <div class="label">Стоимость 1</div>
-          <div class="value" id="res-1">0 <small>₽</small></div>
-          <div class="details" id="breakdown-1"></div>
-        </div>
-        <div class="result-card" id="card-2">
-          <div class="label">Стоимость 2</div>
-          <div class="value" id="res-2">0 <small>₽</small></div>
-          <div class="details" id="breakdown-2"></div>
-        </div>
-        <div class="result-card" id="card-3">
-          <div class="label">Стоимость 3</div>
-          <div class="value" id="res-3">0 <small>₽</small></div>
-          <div class="details" id="breakdown-3"></div>
-        </div>
-        <div class="result-card" id="card-4">
-          <div class="label">Стоимость 4</div>
-          <div class="value" id="res-4">0 <small>₽</small></div>
-          <div class="details" id="breakdown-4"></div>
-        </div>
-        <div class="result-card" id="card-5">
-          <div class="label">Стоимость 5</div>
-          <div class="value" id="res-5">0 <small>₽</small></div>
-          <div class="details" id="breakdown-5"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <input type="text" id="currentSpecName" value="Новое изделие" 
+                style="font-size: 18px; font-weight: 600; border: none; background: transparent; width: 400px;"
+                onchange="updateSpecName(this.value)">
+            </div>
+            <div class="card-description">Редактируйте название изделия</div>
+          </div>
         </div>
       </div>
       
-      <div class="actions-bar">
-        <button class="btn btn-success" onclick="saveData()">Сохранить изменения</button>
-        <button class="btn btn-secondary">Создать копию</button>
-        <button class="btn btn-danger" onclick="resetData()">Удалить</button>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Материалы в изделии</div>
+            <div class="card-description">Выберите материал из справочника и укажите расход на 1 изделие</div>
+          </div>
+          <button class="btn btn-primary" onclick="addSpecMaterialRow()">+ Добавить материал</button>
+        </div>
+        
+        <div class="table-wrapper">
+          <table id="specMaterialsTable">
+            <thead>
+              <tr>
+                <th width="5%"></th>
+                <th width="25%">Материал</th>
+                <th width="10%">Расход</th>
+                <th width="10%">Ед.изм.</th>
+                <th width="9%">Стоимость 1</th>
+                <th width="9%">Стоимость 2</th>
+                <th width="9%">Стоимость 3</th>
+                <th width="9%">Стоимость 4</th>
+                <th width="9%">Стоимость 5</th>
+                <th width="5%"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Работы / Операции</div>
+            <div class="card-description">Укажите стоимость работ (общая для всех поставщиков)</div>
+          </div>
+          <button class="btn btn-primary" onclick="addOperationRow()">+ Добавить работу</button>
+        </div>
+        
+        <div class="table-wrapper">
+          <table id="opsTable">
+            <thead>
+              <tr>
+                <th width="5%"></th>
+                <th width="60%">Наименование операции</th>
+                <th width="20%">Стоимость</th>
+                <th width="5%"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td class="text-right">⚙️ Итого работ (без налога)</td>
+                <td class="text-right" id="ops-total">0.00 ₽</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-right">🧾 Налог (43% от работ)</td>
+                <td class="text-right" id="tax-amount">0.00 ₽</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      
+      <div class="card results-section">
+        <div class="card-title">💰 Себестоимость по поставщикам</div>
+        <div class="card-description" style="margin-bottom: 20px;">Расчёт: Материалы (по поставщикам) + Работы + Налог (43%)</div>
+        
+        <div class="results-grid">
+          <div class="result-card" id="card-1">
+            <div class="label">Стоимость 1</div>
+            <div class="value" id="res-1">0 <small>₽</small></div>
+            <div class="details" id="breakdown-1"></div>
+          </div>
+          <div class="result-card" id="card-2">
+            <div class="label">Стоимость 2</div>
+            <div class="value" id="res-2">0 <small>₽</small></div>
+            <div class="details" id="breakdown-2"></div>
+          </div>
+          <div class="result-card" id="card-3">
+            <div class="label">Стоимость 3</div>
+            <div class="value" id="res-3">0 <small>₽</small></div>
+            <div class="details" id="breakdown-3"></div>
+          </div>
+          <div class="result-card" id="card-4">
+            <div class="label">Стоимость 4</div>
+            <div class="value" id="res-4">0 <small>₽</small></div>
+            <div class="details" id="breakdown-4"></div>
+          </div>
+          <div class="result-card" id="card-5">
+            <div class="label">Стоимость 5</div>
+            <div class="value" id="res-5">0 <small>₽</small></div>
+            <div class="details" id="breakdown-5"></div>
+          </div>
+        </div>
+        
+        <div class="actions-bar">
+          <button class="btn btn-success" onclick="saveAll()">Сохранить изменения</button>
+          <button class="btn btn-secondary" onclick="duplicateSpec()">Создать копию</button>
+          <button class="btn btn-danger" onclick="deleteSpec()">Удалить изделие</button>
+        </div>
+      </div>
+      
     </div>
     
   </div>
@@ -623,11 +550,16 @@
 <div class="toast" id="toast">Данные сохранены!</div>
 
 <script>
+  let materialsCatalog = [];
+  let specifications = [];
+  let currentSpecId = null;
+  
   document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
-    loadFromLocalStorage();
+    loadAllData();
     setupAutoRecalculate();
     setupDragAndDrop();
+    renderSpecSelector();
     recalculate();
   });
   
@@ -652,7 +584,6 @@
     });
   }
   
-  // === Drag and Drop ===
   function setupDragAndDrop() {
     setupTableDrag('#materialsTable tbody');
     setupTableDrag('#specMaterialsTable tbody');
@@ -668,71 +599,48 @@
     tbody.addEventListener('dragstart', (e) => {
       const row = e.target.closest('tr');
       if (!row) return;
-      
       draggedRow = row;
       row.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', row.innerHTML);
     });
     
     tbody.addEventListener('dragend', (e) => {
-      const row = e.target.closest('tr');
-      if (row) {
-        row.classList.remove('dragging');
-      }
-      
-      document.querySelectorAll('tbody tr').forEach(r => {
-        r.classList.remove('drag-over');
-      });
-      
+      if (draggedRow) draggedRow.classList.remove('dragging');
+      document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('drag-over'));
       draggedRow = null;
       recalculate();
-      saveToLocalStorage();
+      saveAll();
     });
     
     tbody.addEventListener('dragover', (e) => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      
       const afterElement = getDragAfterElement(tbody, e.clientY);
       const draggable = document.querySelector('.dragging');
-      
       if (!draggable) return;
-      
-      if (afterElement == null) {
-        tbody.appendChild(draggable);
-      } else {
-        tbody.insertBefore(draggable, afterElement);
-      }
+      if (afterElement == null) tbody.appendChild(draggable);
+      else tbody.insertBefore(draggable, afterElement);
     });
     
     tbody.addEventListener('dragenter', (e) => {
       const row = e.target.closest('tr');
-      if (row && row !== draggedRow) {
-        row.classList.add('drag-over');
-      }
+      if (row && row !== draggedRow) row.classList.add('drag-over');
     });
     
     tbody.addEventListener('dragleave', (e) => {
       const row = e.target.closest('tr');
-      if (row) {
-        row.classList.remove('drag-over');
-      }
+      if (row) row.classList.remove('drag-over');
     });
   }
   
   function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('tr:not(.dragging)')];
-    
     return draggableElements.reduce((closest, child) => {
       const box = child.getBoundingClientRect();
       const offset = y - box.top - box.height / 2;
-      
       if (offset < 0 && offset > closest.offset) {
         return { offset: offset, element: child };
-      } else {
-        return closest;
       }
+      return closest;
     }, { offset: Number.NEGATIVE_INFINITY }).element;
   }
   
@@ -752,12 +660,105 @@
       ${[1,2,3,4,5].map(s => `
         <td><input type="number" class="price-input" data-supplier="${s}" value="${prices[s-1] || ''}" step="0.01" placeholder="-"></td>
       `).join('')}
-      <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
+      <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteMaterialRow(this)">✕</button></td>
     `;
     tbody.appendChild(row);
   }
   
-  function addSpecMaterialRow(data = null) {
+  function deleteMaterialRow(btn) {
+    if (confirm('Удалить материал из справочника? Он исчезнет из всех спецификаций!')) {
+      btn.closest('tr').remove();
+      saveAll();
+    }
+  }
+  
+  function createNewSpec() {
+    const name = prompt('Название нового изделия:', 'Новое изделие');
+    if (!name) return;
+    
+    const newSpec = {
+      id: Date.now().toString(),
+      name: name,
+      materials: [],
+      operations: []
+    };
+    
+    specifications.push(newSpec);
+    renderSpecSelector();
+    switchSpec(newSpec.id);
+    saveAll();
+    showToast('Создано новое изделие', 'success');
+  }
+  
+  function switchSpec(specId) {
+    if (currentSpecId) saveCurrentSpec();
+    
+    currentSpecId = specId;
+    
+    if (!specId) {
+      document.getElementById('specContent').style.display = 'none';
+      return;
+    }
+    
+    const spec = specifications.find(s => s.id === specId);
+    if (!spec) return;
+    
+    document.getElementById('currentSpecName').value = spec.name;
+    document.getElementById('specContent').style.display = 'block';
+    
+    renderSpecMaterials(spec);
+    renderSpecOperations(spec);
+    recalculate();
+  }
+  
+  function updateSpecName(newName) {
+    if (!currentSpecId) return;
+    const spec = specifications.find(s => s.id === currentSpecId);
+    if (spec) {
+      spec.name = newName;
+      renderSpecSelector();
+      saveAll();
+    }
+  }
+  
+  function renderSpecSelector() {
+    const select = document.getElementById('specSelect');
+    select.innerHTML = '<option value="">-- Создать новое изделие --</option>';
+    
+    specifications.forEach(spec => {
+      const option = document.createElement('option');
+      option.value = spec.id;
+      option.textContent = spec.name;
+      option.selected = spec.id === currentSpecId;
+      select.appendChild(option);
+    });
+  }
+  
+  function renderSpecMaterials(spec) {
+    const tbody = document.querySelector('#specMaterialsTable tbody');
+    tbody.innerHTML = '';
+    
+    spec.materials.forEach(mat => {
+      addSpecMaterialRow({
+        materialIdx: mat.materialIdx,
+        qty: mat.qty
+      }, true);
+    });
+  }
+  
+  function renderSpecOperations(spec) {
+    const tbody = document.querySelector('#opsTable tbody');
+    tbody.innerHTML = '';
+    
+    spec.operations.forEach(op => {
+      addOperationRow({
+        name: op.name,
+        cost: op.cost
+      }, true);
+    });
+  }
+  
+  function addSpecMaterialRow(data = null, silent = false) {
     const tbody = document.querySelector('#specMaterialsTable tbody');
     const row = document.createElement('tr');
     row.setAttribute('draggable', 'true');
@@ -786,13 +787,13 @@
     if (materialIdx !== '') {
       const select = row.querySelector('.material-select');
       select.value = materialIdx;
-      updateSpecMaterialRow(select);
+      updateSpecMaterialRow(select, true);
     }
     
-    recalculate();
+    if (!silent) recalculate();
   }
   
-  function updateSpecMaterialRow(select) {
+  function updateSpecMaterialRow(select, silent = false) {
     const row = select.closest('tr');
     const materialIdx = select.value;
     
@@ -801,7 +802,7 @@
       [1,2,3,4,5].forEach(s => {
         row.querySelector(`.cost-display[data-supplier="${s}"]`).value = '';
       });
-      recalculate();
+      if (!silent) recalculate();
       return;
     }
     
@@ -811,10 +812,10 @@
     const unit = materialRow.querySelector('.material-unit').value;
     row.querySelector('.spec-unit').value = unit;
     
-    recalculate();
+    if (!silent) recalculate();
   }
   
-  function addOperationRow(data = null) {
+  function addOperationRow(data = null, silent = false) {
     const tbody = document.querySelector('#opsTable tbody');
     const row = document.createElement('tr');
     row.setAttribute('draggable', 'true');
@@ -829,14 +830,15 @@
       <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
     `;
     tbody.appendChild(row);
-    recalculate();
+    
+    if (!silent) recalculate();
   }
   
   function deleteRow(btn) {
     if (confirm('Удалить строку?')) {
       btn.closest('tr').remove();
       recalculate();
-      saveToLocalStorage();
+      saveAll();
     }
   }
   
@@ -850,10 +852,11 @@
   }
   
   function recalculate() {
+    if (!currentSpecId) return;
+    
     const materialsTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
     let opsTotal = 0;
     
-    // Материалы
     document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
       const materialIdx = row.querySelector('.material-select').value;
       const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
@@ -878,7 +881,6 @@
       });
     });
     
-    // Работы
     document.querySelectorAll('#opsTable tbody tr').forEach(row => {
       const cost = parseFloat(row.querySelector('.op-cost').value) || 0;
       opsTotal += cost;
@@ -889,7 +891,6 @@
     document.getElementById('ops-total').textContent = opsTotal.toFixed(2) + ' ₽';
     document.getElementById('tax-amount').textContent = tax.toFixed(2) + ' ₽';
     
-    // Итоги по поставщикам
     const totals = {};
     [1,2,3,4,5].forEach(s => {
       totals[s] = materialsTotals[s] + opsTotal + tax;
@@ -909,18 +910,12 @@
       
       if (totals[s] > 0) {
         el.innerHTML = `${Math.round(totals[s]).toLocaleString('ru-RU')} <small>₽</small>`;
-        
-        breakdown.innerHTML = `
-          Материалы: ${materialsTotals[s].toFixed(2)} ₽<br>
-          Работы: ${opsTotal.toFixed(2)} ₽<br>
-          Налог: ${tax.toFixed(2)} ₽
-        `;
+        breakdown.innerHTML = `Материалы: ${materialsTotals[s].toFixed(2)} ₽<br>Работы: ${opsTotal.toFixed(2)} ₽<br>Налог: ${tax.toFixed(2)} ₽`;
         
         if (totals[s] < bestCost) {
           bestCost = totals[s];
           bestSupplier = s;
         }
-        
         card.classList.remove('best');
       } else {
         el.innerHTML = '— <small>₽</small>';
@@ -934,86 +929,136 @@
     }
   }
   
-  function saveToLocalStorage() {
-    const data = {
-      productName: document.getElementById('productName').value,
-      materials: [],
-      specMaterials: [],
-      operations: []
-    };
+  function saveCurrentSpec() {
+    if (!currentSpecId) return;
     
+    const spec = specifications.find(s => s.id === currentSpecId);
+    if (!spec) return;
+    
+    spec.materials = [];
+    document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
+      const materialIdx = row.querySelector('.material-select').value;
+      const qty = row.querySelector('.qty-input').value;
+      if (materialIdx !== '') {
+        spec.materials.push({ materialIdx, qty });
+      }
+    });
+    
+    spec.operations = [];
+    document.querySelectorAll('#opsTable tbody tr').forEach(row => {
+      const name = row.querySelector('.op-name').value;
+      const cost = row.querySelector('.op-cost').value;
+      if (name) {
+        spec.operations.push({ name, cost });
+      }
+    });
+  }
+  
+  function saveAll() {
+    saveCurrentSpec();
+    
+    materialsCatalog = [];
     document.querySelectorAll('#materialsTable tbody tr').forEach(row => {
       const prices = [];
       [1,2,3,4,5].forEach(s => {
         prices.push(row.querySelector(`.price-input[data-supplier="${s}"]`).value);
       });
-      
-      data.materials.push({
+      materialsCatalog.push({
         name: row.querySelector('.material-name').value,
         unit: row.querySelector('.material-unit').value,
         prices: prices
       });
     });
     
-    document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
-      data.specMaterials.push({
-        materialIdx: row.querySelector('.material-select').value,
-        qty: row.querySelector('.qty-input').value
-      });
-    });
-    
-    document.querySelectorAll('#opsTable tbody tr').forEach(row => {
-      data.operations.push({
-        name: row.querySelector('.op-name').value,
-        cost: row.querySelector('.op-cost').value
-      });
-    });
+    const data = {
+      materialsCatalog: materialsCatalog,
+      specifications: specifications
+    };
     
     localStorage.setItem('costCalculatorData', JSON.stringify(data));
+    showToast('Данные сохранены!', 'success');
   }
   
-  function loadFromLocalStorage() {
+  function loadAllData() {
     const saved = localStorage.getItem('costCalculatorData');
     if (!saved) {
       addMaterialRow({name: 'Фанера 4мм', unit: 'лист', prices: ['467', '480', '450', '', '500']});
       addMaterialRow({name: 'Ткань', unit: 'пог.м', prices: ['310', '325', '295', '305', '330']});
       addMaterialRow({name: 'Ножки Денвер', unit: 'шт', prices: ['860', '890', '840', '870', '910']});
       
-      addSpecMaterialRow({materialIdx: '0', qty: '0.6666'});
-      addSpecMaterialRow({materialIdx: '1', qty: '1.375'});
-      addSpecMaterialRow({materialIdx: '2', qty: '1'});
+      specifications.push({
+        id: '1',
+        name: 'Стул Токио',
+        materials: [{materialIdx: '0', qty: '0.6666'}, {materialIdx: '1', qty: '1.375'}, {materialIdx: '2', qty: '1'}],
+        operations: [{name: 'Склейка спинки', cost: '48'}, {name: 'Обивщик', cost: '169.5'}, {name: 'Упаковка', cost: '43.5'}]
+      });
       
-      addOperationRow({name: 'Склейка спинки', cost: '48'});
-      addOperationRow({name: 'Обивщик', cost: '169.5'});
-      addOperationRow({name: 'Упаковка', cost: '43.5'});
-      
+      currentSpecId = '1';
+      renderSpecSelector();
+      switchSpec('1');
       return;
     }
     
     const data = JSON.parse(saved);
+    materialsCatalog = data.materialsCatalog || [];
+    specifications = data.specifications || [];
     
-    if (data.productName) {
-      document.getElementById('productName').value = data.productName;
-    }
+    materialsCatalog.forEach(mat => addMaterialRow(mat));
+    renderSpecSelector();
     
-    data.materials.forEach(mat => addMaterialRow(mat));
-    data.specMaterials.forEach(spec => addSpecMaterialRow(spec));
-    data.operations.forEach(op => addOperationRow(op));
-  }
-  
-  function saveData() {
-    saveToLocalStorage();
-    showToast('Данные сохранены!', 'success');
-  }
-  
-  function resetData() {
-    if (confirm('Вы уверены? Все данные будут удалены!')) {
-      localStorage.removeItem('costCalculatorData');
-      location.reload();
+    if (specifications.length > 0) {
+      currentSpecId = specifications[0].id;
+      switchSpec(currentSpecId);
     }
   }
   
-  function exportData() {
+  function duplicateSpec() {
+    if (!currentSpecId) {
+      showToast('Выберите изделие для копирования', 'error');
+      return;
+    }
+    
+    const source = specifications.find(s => s.id === currentSpecId);
+    if (!source) return;
+    
+    const newName = prompt('Название копии:', source.name + ' (копия)');
+    if (!newName) return;
+    
+    const newSpec = {
+      id: Date.now().toString(),
+      name: newName,
+      materials: JSON.parse(JSON.stringify(source.materials)),
+      operations: JSON.parse(JSON.stringify(source.operations))
+    };
+    
+    specifications.push(newSpec);
+    renderSpecSelector();
+    switchSpec(newSpec.id);
+    saveAll();
+    showToast('Спецификация скопирована', 'success');
+  }
+  
+  function deleteSpec() {
+    if (!currentSpecId) {
+      showToast('Выберите изделие для удаления', 'error');
+      return;
+    }
+    
+    const spec = specifications.find(s => s.id === currentSpecId);
+    if (!spec) return;
+    
+    if (confirm(`Удалить спецификацию "${spec.name}"?`)) {
+      specifications = specifications.filter(s => s.id !== currentSpecId);
+      currentSpecId = null;
+      document.getElementById('specContent').style.display = 'none';
+      renderSpecSelector();
+      saveAll();
+      showToast('Спецификация удалена', 'success');
+    }
+  }
+  
+  function exportAll() {
+    saveAll();
     const data = localStorage.getItem('costCalculatorData');
     if (!data) {
       showToast('Нет данных для экспорта', 'error');
@@ -1027,11 +1072,10 @@
     a.download = `cost-calculator-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    
     showToast('Данные экспортированы!', 'success');
   }
   
-  function importData(input) {
+  function importAll(input) {
     const file = input.files[0];
     if (!file) return;
     
@@ -1048,6 +1092,13 @@
     };
     reader.readAsText(file);
     input.value = '';
+  }
+  
+  function resetAll() {
+    if (confirm('Вы уверены? ВСЕ данные (справочник и все спецификации) будут удалены!')) {
+      localStorage.removeItem('costCalculatorData');
+      location.reload();
+    }
   }
   
   function showToast(message, type = 'success') {
