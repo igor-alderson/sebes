@@ -220,6 +220,12 @@
       cursor: not-allowed;
     }
     
+    /* Увеличенная ширина для наименования */
+    .input-material-name {
+      width: 100%;
+      min-width: 250px;
+    }
+    
     .input-small {
       width: 90px;
     }
@@ -374,6 +380,13 @@
       color: #6b7280;
     }
     
+    /* Перенос текста в ячейках */
+    .wrap-text {
+      white-space: normal;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+    
     .toast {
       position: fixed;
       bottom: 24px;
@@ -471,14 +484,14 @@
           <thead>
             <tr>
               <th width="5%"></th>
-              <th>Наименование</th>
-              <th>Ед. изм.</th>
-              <th>Цена 1</th>
-              <th>Цена 2</th>
-              <th>Цена 3</th>
-              <th>Цена 4</th>
-              <th>Цена 5</th>
-              <th></th>
+              <th width="30%">Наименование</th>
+              <th width="10%">Ед. изм.</th>
+              <th width="8%">Цена 1</th>
+              <th width="8%">Цена 2</th>
+              <th width="8%">Цена 3</th>
+              <th width="8%">Цена 4</th>
+              <th width="8%">Цена 5</th>
+              <th width="5%"></th>
             </tr>
           </thead>
           <tbody>
@@ -734,8 +747,8 @@
     
     row.innerHTML = `
       <td class="text-center"><span class="drag-handle">⋮</span></td>
-      <td><input type="text" class="material-name" value="${name}" placeholder="Название материала"></td>
-      <td><input type="text" class="material-unit" value="${unit}" style="width:70px"></td>
+      <td class="wrap-text"><input type="text" class="input-material-name material-name" value="${name}" placeholder="Название материала"></td>
+      <td><input type="text" class="material-unit input-small" value="${unit}"></td>
       ${[1,2,3,4,5].map(s => `
         <td><input type="number" class="price-input" data-supplier="${s}" value="${prices[s-1] || ''}" step="0.01" placeholder="-"></td>
       `).join('')}
@@ -754,7 +767,7 @@
     const materialOptions = getMaterialOptions();
     
     row.innerHTML = `
-      <td class="text-center"><span class="drag-handle">⋮⋮</span></td>
+      <td class="text-center"><span class="drag-handle">⋮</span></td>
       <td>
         <select class="material-select" onchange="updateSpecMaterialRow(this)">
           <option value="">-- Выберите материал --</option>
@@ -811,7 +824,7 @@
     
     row.innerHTML = `
       <td class="text-center"><span class="drag-handle">⋮⋮</span></td>
-      <td><input type="text" class="op-name" value="${name}" placeholder="Название операции"></td>
+      <td class="wrap-text"><input type="text" class="op-name" value="${name}" placeholder="Название операции"></td>
       <td><input type="number" class="op-cost" value="${cost}" step="0.01" placeholder="0.00"></td>
       <td class="text-center"><button class="btn btn-danger btn-icon btn-sm" onclick="deleteRow(this)">✕</button></td>
     `;
