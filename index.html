@@ -633,7 +633,6 @@
   function setupTabs() {
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        // Сохраняем текущую спецификацию перед переключением
         if (currentSpecId) {
           saveCurrentSpec();
           saveAll();
@@ -657,7 +656,6 @@
           e.target.classList.contains('qty-input') || 
           e.target.classList.contains('op-cost')) {
         recalculate();
-        // Автосохранение с задержкой
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = setTimeout(() => {
           if (currentSpecId) {
@@ -780,7 +778,6 @@
   }
   
   function editSpec(specId) {
-    // Сохраняем текущую спецификацию перед переключением
     if (currentSpecId) {
       saveCurrentSpec();
     }
@@ -790,7 +787,6 @@
   }
   
   function backToProducts() {
-    // Сохраняем перед выходом
     if (currentSpecId) {
       saveCurrentSpec();
       saveAll();
@@ -1114,7 +1110,6 @@
     const spec = specifications.find(s => s.id === currentSpecId);
     if (!spec) return;
     
-    // Сохраняем материалы
     spec.materials = [];
     document.querySelectorAll('#specMaterialsTable tbody tr').forEach(row => {
       const materialIdx = row.querySelector('.material-select').value;
@@ -1124,12 +1119,10 @@
       }
     });
     
-    // Сохраняем операции - ВАЖНО: сохраняем все строки, даже с пустой стоимостью
     spec.operations = [];
     document.querySelectorAll('#opsTable tbody tr').forEach(row => {
       const name = row.querySelector('.op-name').value.trim();
       const cost = row.querySelector('.op-cost').value;
-      // Сохраняем если есть имя операции
       if (name) {
         spec.operations.push({ name, cost });
       }
@@ -1137,10 +1130,8 @@
   }
   
   function saveAll() {
-    // Сначала сохраняем текущую спецификацию
     saveCurrentSpec();
     
-    // Сохраняем справочник материалов
     materialsCatalog = [];
     document.querySelectorAll('#materialsTable tbody tr').forEach(row => {
       const prices = [];
@@ -1187,7 +1178,6 @@
     materialsCatalog = data.materialsCatalog || [];
     specifications = data.specifications || [];
     
-    // Убеждаемся что у всех спецификаций есть taxRate
     specifications.forEach(spec => {
       if (spec.taxRate === undefined) {
         spec.taxRate = 0;
@@ -1200,11 +1190,18 @@
       }
     });
     
+    // СНАЧАЛА добавляем материалы в DOM
     materialsCatalog.forEach(mat => addMaterialRow(mat));
+    
+    // Потом рендерим список изделий
     renderProductsList();
     
+    // И только потом переключаемся на первую спецификацию
     if (specifications.length > 0) {
       currentSpecId = specifications[0].id;
+      setTimeout(() => {
+        switchSpec(currentSpecId);
+      }, 100);
     }
   }
   
